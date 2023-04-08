@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Sistema Psicologo",
   "productName": "Sistema psicologo",
-  "author": "Leonardo Moraes <Lmoraes1644cadastros@gmail.com",
+  "author": "Leonardo Moraes <Lmoraes1644cadastros@gmail.com>",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
