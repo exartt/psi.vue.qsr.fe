@@ -9,10 +9,13 @@
     :width="200"
     :breakpoint="500"
     bordered
-    :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'"
+    :style="bgColor"
   >
     <q-list>
       <div v-for="(section, index) in sections" :key="index">
+        <q-item-label header v-if="section.title">
+          {{ section.title }}
+        </q-item-label>
         <q-item
           v-for="(menu, indexMenu) in section.menus"
           :key="indexMenu"
@@ -23,7 +26,7 @@
           <q-item-section avatar>
             <q-icon :name="menu.icon" />
           </q-item-section>
-          <q-item-section>menu.name</q-item-section>
+          <q-item-section>{{ menu.name }}</q-item-section>
         </q-item>
       </div>
     </q-list>
@@ -31,9 +34,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 export default defineComponent({
   name: "Menu-Drawer",
+  computed: {
+    bgColor() {
+      return "background-color: " + this.$q.dark.isActive
+        ? this.$darkPrimary
+        : this.$primary;
+    },
+  },
+  setup() {
+    return {
+      drawer: ref(true),
+      miniState: ref(true),
+    };
+  },
   props: {
     sections: {
       type: Array,
