@@ -19,14 +19,14 @@
         />
       </div>
     </div>
-    <alert-card title="oi" body="teste" ref="dialog" />
+    <alert-card ref="alertCardRef" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useAuthStore } from "../stores/auth";
-import AlertCard from "src/components/alertCard.vue";
+import AlertCard from "src/components/components-structure/alertCard.vue";
 
 export default defineComponent({
   name: "LoginService",
@@ -36,11 +36,15 @@ export default defineComponent({
   setup() {
     const password = ref("");
     const username = ref("");
-    const dialog = ref(null);
+    const alertCardRef = ref(null);
 
     const verifyFields = () => {
       if (!password.value || !username.value) {
-        dialog.value.showDialog();
+        console.log(alertCardRef);
+        alertCardRef.value.showError(
+          "Oops!",
+          "Por favor, preencha todos os campos para prosseguir."
+        );
         return false;
       }
       return true;
@@ -60,7 +64,7 @@ export default defineComponent({
       password,
       username,
       doLogin,
-      dialog,
+      alertCardRef,
     };
   },
 });

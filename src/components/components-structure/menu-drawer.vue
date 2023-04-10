@@ -40,8 +40,8 @@ export default defineComponent({
   computed: {
     bgColor() {
       return "background-color: " + this.$q.dark.isActive
-        ? this.$darkPrimary
-        : this.$primary;
+        ? "darkPrimary"
+        : "primary";
     },
   },
   setup() {
