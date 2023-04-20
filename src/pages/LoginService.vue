@@ -3,13 +3,20 @@
     <div class="container-login column shadow-10">
       <div class="container-btn">
         <q-img></q-img>
-        <q-input v-model="username" label="Email" outlined class="q-mb-sm" />
+        <q-input
+          v-model="username"
+          label="Email"
+          outlined
+          class="q-mb-sm"
+          :rules="[(val) => !!val || 'Campo obrigatório']"
+        />
         <q-input
           v-model="password"
           type="password"
           label="Senha"
           outlined
           class="q-mb-sm"
+          :rules="[(val) => !!val || 'Campo obrigatório']"
         />
         <q-btn
           style="background: #ff0080; color: white"
@@ -43,7 +50,7 @@ export default defineComponent({
         console.log(alertCardRef);
         alertCardRef.value.showError(
           "Oops!",
-          "Por favor, preencha todos os campos para prosseguir."
+          "Por favor, preencha todos os campos obrigatórios para que possamos prosseguir."
         );
         return false;
       }

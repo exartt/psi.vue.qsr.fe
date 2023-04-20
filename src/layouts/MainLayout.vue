@@ -1,8 +1,9 @@
 <template>
   <q-layout view="hHh Lpr lff">
-    <q-header elevated>
-      <q-toolbar>
+    <q-header>
+      <q-toolbar class="primary">
         <q-btn
+          class="color-white"
           flat
           dense
           round
@@ -11,7 +12,9 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Sistema Clínica Psicologica </q-toolbar-title>
+        <q-toolbar-title class="color-white">
+          Sistema Clínica Psicologica
+        </q-toolbar-title>
       </q-toolbar>
     </q-header>
     <menu-drawer :sections="sections" />
@@ -25,7 +28,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import menuDrawer from "src/components/components-structure/menu-drawer.vue";
-import alertCard from "src/components/alertCard.vue";
+import alertCard from "src/components/components-structure/alertCard.vue";
 export default defineComponent({
   name: "MainLayout",
 
@@ -60,6 +63,11 @@ export default defineComponent({
               icon: "event",
               name: "event",
             },
+            {
+              route: "/dashboard",
+              icon: "space_dashboard",
+              name: "Dashboard",
+            },
           ],
         },
       ],
@@ -71,3 +79,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.color-white {
+  color: #ffffff;
+}
+</style>

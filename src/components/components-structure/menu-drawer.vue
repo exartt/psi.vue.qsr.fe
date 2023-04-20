@@ -7,9 +7,9 @@
     @mouseout="miniState = true"
     mini-to-overlay
     :width="200"
-    :breakpoint="500"
+    class="menu-drawer"
     bordered
-    :style="bgColor"
+    ref="drawerRef"
   >
     <q-list>
       <div v-for="(section, index) in sections" :key="index">
@@ -21,12 +21,13 @@
           :key="indexMenu"
           clickable
           v-ripple
-          :to="menu.route"
+          class="unselected-item row"
+          :to="'/Default' + menu.route"
         >
-          <q-item-section avatar>
-            <q-icon :name="menu.icon" />
+          <q-item-section avatar class="col-auto">
+            <q-icon :name="'r_' + menu.icon" />
           </q-item-section>
-          <q-item-section>{{ menu.name }}</q-item-section>
+          <q-item-section class="col">{{ menu.name }}</q-item-section>
         </q-item>
       </div>
     </q-list>
@@ -39,10 +40,11 @@ export default defineComponent({
   name: "Menu-Drawer",
   computed: {
     bgColor() {
-      return "background-color: " + this.$q.dark.isActive
-        ? "darkPrimary"
-        : "primary";
+      return this.$q.dark.isActive ? "bg-darkPrimary" : "bg-primary";
     },
+  },
+  mounted() {
+    console.log(this.$refs.drawerRef);
   },
   setup() {
     return {
@@ -58,3 +60,12 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.menu-drawer {
+  color: #bdc3c7;
+}
+.unselected-item {
+  color: #7f8c8d;
+}
+</style>
