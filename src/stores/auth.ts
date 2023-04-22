@@ -14,7 +14,6 @@ export const useAuthStore = defineStore('auth', {
     async doLogin({ username, password } : User) {
       const utils = inject<IUtils>(UtilKey) as any;
       try {
-        console.log(utils)
         utils.showLoading('Efetuando login')
         await api.post('/login', { username, password }).then(response => {
           // this.user = response.data;
@@ -23,7 +22,6 @@ export const useAuthStore = defineStore('auth', {
         this.error = error.response.data.message;
         console.error('Erro ao efetuar login');
       } finally {
-        console.log(utils)
         // utils.hideLoading()
       }
     }

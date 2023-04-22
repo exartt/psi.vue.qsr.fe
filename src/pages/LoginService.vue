@@ -47,7 +47,6 @@ export default defineComponent({
 
     const verifyFields = () => {
       if (!password.value || !username.value) {
-        console.log(alertCardRef);
         alertCardRef.value.showError(
           "Oops!",
           "Por favor, preencha todos os campos obrigatórios para que possamos prosseguir."
