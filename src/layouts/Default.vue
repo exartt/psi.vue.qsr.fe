@@ -18,18 +18,18 @@
       </q-toolbar>
     </q-header>
     <menu-drawer ref="drawer" :sections="sections" />
-    <q-page-container>
+    <q-page-container class="bg-grey-2">
       <router-view />
     </q-page-container>
   </q-layout>
-  <alert-card/>
+  <alert-card />
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import MenuDrawer from "src/components/components-structure/menu-drawer.vue";
 import AlertCard from "src/components/components-structure/alertCard.vue";
-import { sections } from "src/interfaces/IMenuDrawer"
+import { sections } from "src/interfaces/IMenuDrawer";
 export default defineComponent({
   name: "DefaultLayout",
 
@@ -41,11 +41,11 @@ export default defineComponent({
     const drawer = ref<InstanceType<typeof MenuDrawer>>();
     const handlerDrawer: () => void = () => {
       drawer.value.handlerDrawer();
-    }
+    };
     return {
       sections,
       handlerDrawer,
-      drawer
+      drawer,
     };
   },
 });

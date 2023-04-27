@@ -39,11 +39,11 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { Section } from "src/interfaces/IMenuDrawer";
-import { useRoute } from 'vue-router';
+import { useRoute } from "vue-router";
 export default defineComponent({
   name: "MenuDrawer",
 
-  setup(props) {
+  setup() {
     const miniState = ref(true);
     const route = useRoute();
     const bgColor = computed(() => {
@@ -70,7 +70,7 @@ export default defineComponent({
     return {
       miniState,
       bgColor,
-      handlerDrawer
+      handlerDrawer,
     };
   },
 
