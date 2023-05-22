@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import MenuDrawer from "src/components/components-structure/menu-drawer.vue";
 import alertCard from "src/components/components-structure/alertCard.vue";
 export default defineComponent({
@@ -40,7 +40,6 @@ export default defineComponent({
     handlerClick() {
       this.$set(this.$refs.drawer, "miniState", !this.$refs.drawer.miniState);
     },
-    return
   },
   setup() {
     return {

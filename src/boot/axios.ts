@@ -1,5 +1,7 @@
-import { boot } from 'quasar/wrappers'
-import axios, { AxiosInstance } from 'axios'
+import { boot } from 'quasar/wrappers';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { useStore } from 'pinia';
+import { useRouter } from 'vue-router';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -7,24 +9,27 @@ declare module '@vue/runtime-core' {
   }
 }
 
-// Be careful when using SSR for cross-request state pollution
-// due to creating a Singleton instance here;
-// If any client changes this (global) instance, it might be a
-// good idea to move this instance creation inside of the
-// "export default () => {}" function below (which runs individually
-// for each client)
-const api = axios.create({ baseURL: 'http://localhost:3000' })
+const api = axios.create({ baseURL: 'http://localhost:3020' });
+
+function addAuthorizationHeader(config: AxiosRequestConfig): AxiosRequestConfig {
+  const store = useStore();
+  const token = store.state.auth.token;
+  const tokenExpiration = store.state.auth.tokenExpiration;
+  const router = useRouter();
+
+  if (token && tokenExpiration && new Date(tokenExpiration) > new Date()) {
+    config.headers = { ...(config.headers || {}), Authorization: `Bearer ${token}` };
+  } else {
+    router.push('/login');
+  }
+
+  return config;
+}
 
 export default boot(({ app }) => {
-  // for use inside Vue files (Options API) through this.$axios and this.$api
+  const axiosInstance = axios.create();
+  axiosInstance.interceptors.request.use(addAuthorizationHeader);
 
-  app.config.globalProperties.$axios = axios
-  // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
-  //       so you won't necessarily have to import axios in each vue file
-
-  app.config.globalProperties.$api = api
-  // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
-  //       so you can easily perform requests against your app's API
-})
-
-export { api }
+  app.config.globalProperties.$axios = axiosInstance;
+  app.config.globalProperties.$api = api;
+});
