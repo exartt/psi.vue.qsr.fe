@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { useAuthStore } from "../stores/auth";
+import { useAuthStore } from "src/stores/authStore";
 import AlertCard from "src/components/components-structure/alertCard.vue";
 
 export default defineComponent({

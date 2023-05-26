@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { inject } from 'vue'
 import { api } from 'src/boot/axios'
-import { User } from 'src/interfaces/IUser'
+import { UserLogin } from 'src/interfaces/IUser'
 import { UtilKey } from 'src/util/utils'
 import { IUtils } from 'src/util/IUtil'
 
@@ -11,7 +11,7 @@ export const useAuthStore = defineStore('auth', {
     error: null
   }),
   actions: {
-    async doLogin({ username, password } : User) {
+    async doLogin({ username, password } : UserLogin) {
       const utils = inject<IUtils>(UtilKey) as any;
       try {
         utils.showLoading('Efetuando login')

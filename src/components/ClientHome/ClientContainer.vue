@@ -1,14 +1,14 @@
 <template>
   <container>
-    <div class="row">
-      <div class="col-6">
+    <div class="row justify-evenly">
+      <div class="col-5">
         <div class="column container items-center q-py-md">
           <div class="col-auto q-pb-md">
             <q-icon size="160px" color="grey" name="account_circle" />
           </div>
           <div class="col-auto full-width">
             <div class="row justify-center full-width">
-              <div class="col-12 q-px-sm">
+              <div class="col-9 q-px-sm">
                 <q-field
                   label="Nome"
                   stack-label
@@ -37,21 +37,24 @@
                     </div>
                   </template>
                 </q-field>
+                <card-financial-status class="q-py-sm"></card-financial-status>
               </div>
             </div>
           </div>
         </div>
         <q-separator vertical />
       </div>
-      <div class="col-6">
+      <q-separator vertical />
+
+      <div class="col-5">
         <div class="row justify-center full-width">
           <div class="col-12 q-pa-sm">
-            <container header="Histórico de atendimento">
+            <container isFlat header="Histórico de atendimento">
               <q-table flat :rows="rows" :columns="columns" row-key="name" />
             </container>
           </div>
           <div class="col-12 q-pa-sm">
-            <container header="Histórico Financeiro">
+            <container isFlat header="Histórico Financeiro">
               <q-table flat :rows="rows" :columns="columns" row-key="name" />
             </container>
           </div>
@@ -64,11 +67,12 @@
 <script lang="ts">
 import Container from "src/components/components-structure/container.vue";
 import { ref } from "vue";
-
+import CardFinancialStatus from "../Cards/CardFinancialStatus.vue";
 export default {
   name: "ClientContainer",
   components: {
     Container,
+    CardFinancialStatus,
   },
   setup() {
     const columns = ref([
