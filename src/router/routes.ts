@@ -9,7 +9,8 @@ const routes: RouteRecordRaw[] = [
     path: '/Default',
     component: () => import('layouts/Default.vue'),
     children: [
-      { path: '', component: () => import('pages/Home.vue') }
+      { path: '', component: () => import('pages/Home.vue') },
+      { path: '/Agenda', component: () => import('pages/Schedule.vue') },
     ]
   },
 

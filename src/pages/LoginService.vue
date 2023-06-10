@@ -47,6 +47,7 @@ export default defineComponent({
 
     const verifyFields = () => {
       if (!password.value || !username.value) {
+        // TODO -> substituir pelo sweetalert
         alertCardRef.value.showError(
           "Oops!",
           "Por favor, preencha todos os campos obrigatórios para que possamos prosseguir."

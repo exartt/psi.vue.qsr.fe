@@ -14,12 +14,12 @@ const path = require('path')
 module.exports = configure(function (/* ctx */) {
   return {
     eslint: {
-      fix: true,
+      // fix: true,
       // include: [],
       // exclude: [],
       // rawOptions: {},
-      warnings: true,
-      errors: true
+      // warnings: true,
+      // errors: true
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
@@ -30,7 +30,8 @@ module.exports = configure(function (/* ctx */) {
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: [
       'i18n',
-      'axios'
+      'axios',
+      'sweetalert',
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -103,7 +104,7 @@ module.exports = configure(function (/* ctx */) {
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
     framework: {
       config: {},
-
+      cssAddon: true,
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
 

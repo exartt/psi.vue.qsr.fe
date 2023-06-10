@@ -38,7 +38,8 @@ export default defineComponent({
   },
   methods: {
     handlerClick() {
-      this.$set(this.$refs.drawer, "miniState", !this.$refs.drawer.miniState);
+      this.$swal.fire("Hello Vue world!!!");
+      // this.$set(this.$refs.drawer, "miniState", !this.$refs.drawer.miniState);
     },
   },
   setup() {

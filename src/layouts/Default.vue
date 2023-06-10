@@ -30,6 +30,8 @@ import { defineComponent, ref } from "vue";
 import MenuDrawer from "src/components/components-structure/menu-drawer.vue";
 import AlertCard from "src/components/components-structure/alertCard.vue";
 import { sections } from "src/interfaces/IMenuDrawer";
+import { useSweetAlert2 } from "src/composables/useSweetalert";
+
 export default defineComponent({
   name: "DefaultLayout",
 
@@ -39,8 +41,10 @@ export default defineComponent({
   },
   setup() {
     const drawer = ref<InstanceType<typeof MenuDrawer>>();
+    const message = useSweetAlert2();
+
     const handlerDrawer: () => void = () => {
-      drawer.value.handlerDrawer();
+      drawer.value?.handlerDrawer();
     };
     return {
       sections,
