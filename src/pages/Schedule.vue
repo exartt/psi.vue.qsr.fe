@@ -5,7 +5,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
+import useApi from "src/composables/requests";
 import Calendar from "src/components/components-structure/calendar.vue";
 export default defineComponent({
   name: "ScheduleService",
@@ -13,29 +14,19 @@ export default defineComponent({
     Calendar,
   },
   setup() {
-    const events = [
-      {
-        title: "Reunião com o cliente",
-        start: "2023-06-12",
-        end: "2023-06-12",
-      },
-      {
-        title: "Treinamento da equipe",
-        start: "2023-06-15T10:00:00",
-        end: "2023-06-15T12:00:00",
-      },
-      {
-        title: "Almoço com colegas",
-        start: "2023-06-18T13:00:00",
-        end: "2023-06-18T14:00:00",
-      },
-      { title: "Aniversário de um amigo", start: "2023-06-20" },
-      {
-        title: "Conferência online",
-        start: "2023-06-22T09:00:00",
-        end: "2023-06-22T17:00:00",
-      },
-    ];
+    onMounted(() => {
+      getAppointments();
+    });
+    const schedule = "/schedule/v1";
+    const events = ref([]);
+    const { get, post, error } = useApi();
+
+    const getAppointments = async (year: number = 2023) => {
+      const url = `${schedule}/list-appointments?year=${year}`;
+      const data = await get(url, false);
+      console.log(data);
+      events.value = data;
+    };
 
     return { events };
   },

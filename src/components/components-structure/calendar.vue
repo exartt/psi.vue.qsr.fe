@@ -1,56 +1,70 @@
 <template>
   <div class="container-calendar">
     <full-calendar class="calendar" :options="calendarOptions"></full-calendar>
-    <responsive-modal ref="responsiveModal"></responsive-modal>
+    <appointment ref="appointmentModal"></appointment>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, onMounted } from "vue";
+import { defineComponent, PropType, ref } from "vue";
 import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import ResponsiveModal from "./modal.vue";
-import { ModalComponent } from "@/interfaces/IComponents";
+import Appointment from "../Appointment/appointment.vue";
+import { AppointmentModalComponet } from "@/interfaces/IComponents";
+import useApi from "src/composables/requests";
+
+type EventType = {
+  ID: number;
+  PsychologistID: number;
+  PatientID: number;
+  TenantID: number;
+  CalendarID: string;
+  Start: string;
+  End: string;
+  Summary: string;
+  Description: string;
+  Location: string;
+  Status: string;
+  Notify: boolean;
+  CreatedAt: string;
+  UpdatedAt: string;
+};
 
 export default defineComponent({
   components: {
     FullCalendar,
-    ResponsiveModal,
+    Appointment,
   },
   props: {
     events: {
-      type: Array as PropType<
-        Array<{ title: string; start: string; end?: string }>
-      >,
+      type: Array as PropType<Array<EventType>>,
       required: true,
     },
   },
   setup(props) {
+    const { get, post, error } = useApi();
+
     const currentEvents = ref([]);
-    const responsiveModal = ref<ModalComponent | null>(null);
+    const schedule = "/schedule/v1";
+    const appointmentModal = ref<AppointmentModalComponet | null>(null);
+
+    const openModal = (start: string): void => {
+      appointmentModal.value?.onOpen(start);
+    };
+
+    const createSchedule = (selectInfo: any) => {
+      console.log(selectInfo);
+      openModal(selectInfo.startStr);
+    };
 
     const handleWeekendsToggle = () => {
       calendarOptions.value.weekends = !calendarOptions.value.weekends;
     };
 
-    const createSchedule = (selectInfo: any) => {
-      openModal(selectInfo.startStr);
-    };
-
-    const openModal = (start: String): void => {
-      responsiveModal.value?.open(start);
-    };
-
-    const openSchedule = (clickInfo: any) => {
-      if (
-        confirm(
-          `Are you sure you want to delete the event '${clickInfo.event.title}'`
-        )
-      ) {
-        clickInfo.event.remove();
-      }
+    const onSelectAppointment = (appointmentSelected: any): void => {
+      appointmentModal.value?.onEdit(appointmentSelected);
     };
 
     const handleEvents = (events: any) => {
@@ -78,12 +92,29 @@ export default defineComponent({
       dayMaxEvents: true,
       weekends: true,
       select: createSchedule,
-      eventClick: openSchedule,
+      eventClick: onSelectAppointment,
       eventsSet: handleEvents,
-      events: props.events,
+      events: props.events.map((event) => ({
+        id: event.ID,
+        title: event.Description,
+        start: event.Start,
+        end: event.End,
+        description: event.Description,
+        location: event.Location,
+        extendedProps: {
+          status: event.Status,
+          notify: event.Notify,
+          psychologistID: event.PsychologistID,
+          patientID: event.PatientID,
+          tenantID: event.TenantID,
+          calendarID: event.CalendarID,
+          createdAt: event.CreatedAt,
+          updatedAt: event.UpdatedAt,
+        },
+      })),
     });
 
-    return { calendarOptions, responsiveModal };
+    return { calendarOptions, appointmentModal };
   },
 });
 </script>

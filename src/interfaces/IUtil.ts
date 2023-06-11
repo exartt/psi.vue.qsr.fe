@@ -17,7 +17,7 @@ export type RequestMessage = {
 }
 
 export interface ApiMethods {
-  get: (url: string) => Promise<any>;
+  get: (url: string, showMessage: boolean) => Promise<any>;
   post: (url: string, data: any) => Promise<void>;
   put: (url: string, data: any) => Promise<void>;
   delete: (url: string) => Promise<void>;

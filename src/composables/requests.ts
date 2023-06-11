@@ -1,4 +1,4 @@
-import { ref, Ref, getCurrentInstance } from 'vue';
+import { ref, getCurrentInstance } from 'vue';
 import { useQuasar } from 'quasar';
 import { ApiMethods, RequestMessage } from '@/interfaces/IUtil';
 import { AxiosResponse } from 'axios';
@@ -13,15 +13,21 @@ export default function useApi(): ApiMethods {
   const defaultMessage: RequestMessage = { success: { title: null, message: "Requisição bem sucedida!" },
   error: { title: "Oops...", message: "Ocorreu um erro inesperado! Aguarde alguns instantes e tente novamente" } }
 
-  const get = async (url: string, requestMessage: RequestMessage = defaultMessage): Promise<any> => {
+  const get = async (url: string, showMessage: boolean = true, requestMessage: RequestMessage = defaultMessage): Promise<any> => {
     try {
       $q.loading.show();
       const response: AxiosResponse<any> | undefined = await internalInstance?.appContext.config.globalProperties.$gateway.get(url);
-      if (response) {
-        return response.data;
-      } else {
+      if (!response) {
         throw new Error("Servidor não retornou nenhuma resposta.");
       }
+      if (showMessage) {
+        message.fire({
+          icon: 'success',
+          title: requestMessage.success.title ? requestMessage.success.title : undefined,
+          text: requestMessage.success.message ? requestMessage.success.message : undefined,
+        })
+      }
+      return response.data;
     } catch (err) {
       error.value = err instanceof Error ? err : new Error(String(err));
       message.fire({
@@ -34,14 +40,17 @@ export default function useApi(): ApiMethods {
     }
   };
 
-  const post = async (url: string, data: any, RequestMessage: RequestMessage = defaultMessage): Promise<void> => {
+  const post = async (url: string, data: any, requestMessage: RequestMessage = defaultMessage): Promise<void> => {
     try {
       $q.loading.show();
       await internalInstance?.appContext.config.globalProperties.$gateway.post(url, data);
-      console.log("Dados enviados com sucesso!");
+      message.fire({
+        icon: 'success',
+        title: requestMessage.success.title ? requestMessage.success.title : undefined,
+        text: requestMessage.success.message ? requestMessage.success.message : undefined,
+      })
     } catch (err) {
       error.value = err instanceof Error ? err : new Error(String(err));
-      console.error("Erro ao enviar dados:", err);
     } finally {
       $q.loading.hide();
     }
