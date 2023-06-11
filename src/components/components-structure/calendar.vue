@@ -36,11 +36,11 @@ export default defineComponent({
     };
 
     const createSchedule = (selectInfo: any) => {
-      openModal();
+      openModal(selectInfo.startStr);
     };
 
-    const openModal = () => {
-      responsiveModal.value?.open();
+    const openModal = (start: String): void => {
+      responsiveModal.value?.open(start);
     };
 
     const openSchedule = (clickInfo: any) => {

@@ -16,7 +16,7 @@ import { defineComponent, computed, toRefs } from "vue";
 export default defineComponent({
   name: "SelectCustom",
   props: {
-    modelValue: [String, Number, Array],
+    modelValue: Object,
     label: {
       type: String,
       required: true,

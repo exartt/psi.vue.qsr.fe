@@ -1,4 +1,4 @@
 export interface ModalComponent {
-  open: () => void;
+  open: (start: String) => void;
   close: () => void;
 }

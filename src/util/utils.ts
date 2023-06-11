@@ -1,6 +1,6 @@
 import { Loading } from 'quasar';
 import { InjectionKey } from 'vue';
-import { IUtils } from './IUtil';
+import { IUtils } from '../interfaces/IUtil';
 
 export const UtilKey: InjectionKey<IUtils> = Symbol('IUtils');
 

@@ -6,10 +6,14 @@ import { useRouter } from 'vue-router'
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $axios: AxiosInstance;
+    $api: AxiosInstance;
+    $gateway: AxiosInstance;
   }
 }
 
 const api = axios.create({ baseURL: 'http://localhost:3020' })
+
+const gateway = axios.create({ baseURL: 'http://localhost:3030' })
 
 // function addAuthorizationHeader(config: AxiosRequestConfig): AxiosRequestConfig {
 //   const store = useStore();
@@ -32,4 +36,5 @@ export default boot(({ app }) => {
 
   app.config.globalProperties.$axios = axiosInstance
   app.config.globalProperties.$api = api
+  app.config.globalProperties.$gateway = gateway
 })

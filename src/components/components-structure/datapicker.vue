@@ -7,6 +7,7 @@
       filled
       color="primary"
       @click="openDatePicker"
+      readonly
     >
       <template v-slot:append>
         <q-icon name="event" color="primary" @click="openDatePicker" />
@@ -16,12 +17,13 @@
     <q-dialog v-model="showDateDialog">
       <div class="column bg-white">
         <q-date v-model="selectedDate" color="red" dense flat></q-date>
-        <div class="row justify-end full-width">
-          <div class="col-4">
+        <div class="row reverse full-width q-pb-md">
+          <div class="col-auto">
             <q-btn
               flat
               label="Próximo"
               class="q-pa-md"
+              no-caps
               dense
               :disable="!selectedDate"
               @click="goToTimePicker"
@@ -32,14 +34,42 @@
     </q-dialog>
 
     <q-dialog v-model="showTimeDialog">
-      <q-card>
-        <q-card-section>
-          <q-time v-model="selectedTime"></q-time>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn label="Salvar" @click="saveDateTime" />
-        </q-card-actions>
-      </q-card>
+      <div class="row bg-white">
+        <div class="column">
+          <q-time v-model="selectedTime" flat dense></q-time>
+          <div class="col-auto q-pt-sm q-pb-md q-px-md">
+            <div class="row justify-between">
+              <div class="col-auto">
+                <q-btn
+                  label="Cancelar"
+                  dense
+                  no-caps
+                  flat
+                  @click="saveDateTime"
+                />
+              </div>
+              <div class="col-auto">
+                <q-btn
+                  label="Voltar"
+                  dense
+                  no-caps
+                  flat
+                  @click="saveDateTime"
+                  class="q-mr-md-sm"
+                />
+                <q-btn
+                  label="Salvar"
+                  dense
+                  no-caps
+                  flat
+                  @click="saveDateTime"
+                  class="q-ml-md-sm"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </q-dialog>
   </div>
 </template>
