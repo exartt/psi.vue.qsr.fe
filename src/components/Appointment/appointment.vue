@@ -30,11 +30,34 @@
       </div>
     </template>
     <template #btn-section>
-      <div class="col-auto q-pl-md">
-        <q-btn label="Agendar" no-caps flat @click="createAppointment" />
+      <div class="row reverse" v-if="!isEditMode">
+        <div class="col-auto q-pl-md">
+          <s-button label="Agendar" @click="createAppointment" type="primary" />
+        </div>
+        <div class="col-auto q-pl-sm">
+          <s-button label="Cancelar" @click="close" type="tertiary" />
+        </div>
       </div>
-      <div class="col-auto q-pl-sm">
-        <q-btn label="Cancelar" no-caps flat @click="close" />
+      <div class="row justify-between full-width" v-else>
+        <div class="col-auto">
+          <s-button
+            label="Confirmar"
+            icon="o_check_circle"
+            @click="close"
+            type="secondary"
+          />
+        </div>
+        <q-space />
+        <div class="col-auto q-pl-sm">
+          <s-button label="Desmarcar" @click="close" type="tertiary" />
+        </div>
+        <div class="col-auto q-pl-md">
+          <s-button
+            label="Remarcar"
+            @click="createAppointment"
+            type="primary"
+          />
+        </div>
       </div>
     </template>
   </modal>
@@ -49,6 +72,8 @@ import selectComponent from "src/components/components-structure/select.vue";
 import { date } from "quasar";
 import { IOptions, ModalComponent } from "src/interfaces/IComponents";
 import useApi from "src/composables/requests";
+import SButton from "../components-structure/button.vue";
+import { EventType } from "@/interfaces/IUtil";
 
 export default defineComponent({
   components: {
@@ -56,6 +81,7 @@ export default defineComponent({
     inputComponent,
     selectComponent,
     datapickerComponent,
+    SButton,
   },
   setup() {
     const { get, post, error } = useApi();
@@ -65,11 +91,13 @@ export default defineComponent({
     });
     const responsiveModal = ref<ModalComponent | null>(null);
 
+    const storeSelected = ref<EventType | null>(null);
+    const isEditMode = ref(false);
     const dateStart = ref("");
     const dateEnd = ref("");
     const summary = ref("");
     const description = ref("");
-    const options = [
+    const options: IOptions[] = [
       {
         label: "Cliente teste",
         value: 1,
@@ -88,6 +116,13 @@ export default defineComponent({
       };
     };
 
+    const resetData = () => {
+      summary.value = "";
+      description.value = "";
+      storeSelected.value = null;
+      choosedTest.value = { value: null, label: null };
+    };
+
     const createAppointment = async () => {
       const response = await post(
         "/schedule/v1/create-appointment",
@@ -99,13 +134,36 @@ export default defineComponent({
       return date.extractDate(data, "YYYY/MM/DD HH:mm");
     };
 
-    const open = (daySelected: string): void => {
+    const onOpen = (daySelected: string): void => {
+      resetData();
+      dateStart.value = getDefaultDate(daySelected, true);
+      dateEnd.value = getDefaultDate(daySelected, false);
+      isEditMode.value = false;
       responsiveModal.value?.open();
     };
 
+    const parseDate = (input: string) => {
+      const parsedDate = new Date(input);
+      return date.formatDate(parsedDate, "YYYY/MM/DD HH:mm");
+    };
+
     const onEdit = (appointmentSelected: any): void => {
-      console.log(appointmentSelected);
+      storeSelected.value = appointmentSelected;
+
+      dateStart.value = parseDate(appointmentSelected.start);
+      dateEnd.value = parseDate(appointmentSelected.end);
+      summary.value = appointmentSelected.summary;
+      description.value = appointmentSelected.description;
+      const patient = getPatientById(appointmentSelected.patientID);
+      if (patient) {
+        choosedTest.value = patient;
+      }
+      isEditMode.value = true;
       responsiveModal.value?.open();
+    };
+
+    const getPatientById = (id: number): IOptions | undefined => {
+      return options.find((patient) => patient.value === id);
     };
 
     const close = () => {
@@ -138,7 +196,7 @@ export default defineComponent({
       responsiveLastChild,
       responsiveConfig,
       responsiveModal,
-      open,
+      onOpen,
       close,
       createAppointment,
       dateStart,
@@ -148,6 +206,7 @@ export default defineComponent({
       choosedTest,
       options,
       onEdit,
+      isEditMode,
     };
   },
 });

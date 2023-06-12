@@ -13,24 +13,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import Appointment from "../Appointment/appointment.vue";
 import { AppointmentModalComponet } from "@/interfaces/IComponents";
-import useApi from "src/composables/requests";
-
-type EventType = {
-  ID: number;
-  PsychologistID: number;
-  PatientID: number;
-  TenantID: number;
-  CalendarID: string;
-  Start: string;
-  End: string;
-  Summary: string;
-  Description: string;
-  Location: string;
-  Status: string;
-  Notify: boolean;
-  CreatedAt: string;
-  UpdatedAt: string;
-};
+import { EventType } from "@/interfaces/IUtil";
 
 export default defineComponent({
   components: {
@@ -44,10 +27,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { get, post, error } = useApi();
-
     const currentEvents = ref([]);
-    const schedule = "/schedule/v1";
     const appointmentModal = ref<AppointmentModalComponet | null>(null);
 
     const openModal = (start: string): void => {
@@ -63,7 +43,21 @@ export default defineComponent({
       calendarOptions.value.weekends = !calendarOptions.value.weekends;
     };
 
-    const onSelectAppointment = (appointmentSelected: any): void => {
+    const onSelectAppointment = (clickInfo: any): void => {
+      const appointmentSelected = {
+        ID: clickInfo.event.id,
+        summary: clickInfo.event.title,
+        start: clickInfo.event.start,
+        end: clickInfo.event.end,
+        description: clickInfo.event.description,
+        location: clickInfo.event.location,
+        status: clickInfo.event.extendedProps.status,
+        notify: clickInfo.event.extendedProps.notify,
+        psychologistID: clickInfo.event.extendedProps.psychologistID,
+        patientID: clickInfo.event.extendedProps.patientID,
+        tenantID: clickInfo.event.extendedProps.tenantID,
+      };
+
       appointmentModal.value?.onEdit(appointmentSelected);
     };
 
@@ -112,6 +106,9 @@ export default defineComponent({
           updatedAt: event.UpdatedAt,
         },
       })),
+      slotMinTime: "06:00:00",
+      slotMaxTime: "22:00:00",
+      hiddenDays: [0],
     });
 
     return { calendarOptions, appointmentModal };

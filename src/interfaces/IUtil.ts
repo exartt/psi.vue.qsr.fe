@@ -23,3 +23,20 @@ export interface ApiMethods {
   delete: (url: string) => Promise<void>;
   error: Ref<Error| null>;
 }
+
+export type EventType = {
+  ID: number;
+  PsychologistID: number;
+  PatientID: number;
+  TenantID: number;
+  CalendarID: string;
+  Start: string;
+  End: string;
+  Summary: string;
+  Description: string;
+  Location: string;
+  Status: string;
+  Notify: boolean;
+  CreatedAt: string;
+  UpdatedAt: string;
+};

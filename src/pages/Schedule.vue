@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <calendar :events="events" />
+    <calendar v-if="!loading" :events="events" />
   </q-page>
 </template>
 
@@ -19,16 +19,28 @@ export default defineComponent({
     });
     const schedule = "/schedule/v1";
     const events = ref([]);
-    const { get, post, error } = useApi();
+    const { get } = useApi();
+    const loading = ref(false);
 
     const getAppointments = async (year: number = 2023) => {
+      loading.value = true;
       const url = `${schedule}/list-appointments?year=${year}`;
       const data = await get(url, false);
-      console.log(data);
       events.value = data;
+      loading.value = false;
     };
 
-    return { events };
+    return { events, loading };
   },
 });
 </script>
+
+<style lang="scss">
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.2em;
+}
+</style>

@@ -10,3 +10,4 @@ interface User {
   isActive: boolean
   profileType: number
 }
+

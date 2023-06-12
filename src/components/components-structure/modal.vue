@@ -4,13 +4,13 @@
       <div class="row line full-width">
         <div class="row header-modal q-pa-md justify-between full-width">
           <span class="text-h5 items-center"> {{ title }}</span>
-          <q-btn no-caps flat>Fechar</q-btn>
+          <s-button no-caps flat icon="o_close" @click="close" rounded />
         </div>
       </div>
       <div class="row full-width q-px-md q-pt-md q-pb-sm">
         <slot name="body"></slot>
       </div>
-      <div class="row full-width q-pb-md q-px-md reverse">
+      <div class="row full-width q-pb-md q-px-md">
         <slot name="btn-section"></slot>
       </div>
     </div>
@@ -20,6 +20,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import SButton from "./button.vue";
 
 export default defineComponent({
   name: "ResponsiveModal",
@@ -28,6 +29,9 @@ export default defineComponent({
       required: true,
       type: String,
     },
+  },
+  components: {
+    SButton,
   },
   setup(_, { emit }) {
     const isOpened = ref(false);
