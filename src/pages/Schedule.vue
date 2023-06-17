@@ -1,6 +1,10 @@
 <template>
   <q-page padding>
-    <calendar v-if="!loading" :events="events" />
+    <calendar
+      v-if="!loading"
+      :events="events"
+      @reloadCalendar="getAppointments"
+    />
   </q-page>
 </template>
 
@@ -30,7 +34,7 @@ export default defineComponent({
       loading.value = false;
     };
 
-    return { events, loading };
+    return { events, loading, getAppointments };
   },
 });
 </script>

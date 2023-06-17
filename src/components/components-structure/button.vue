@@ -6,11 +6,10 @@
     no-caps
     :style="buttonStyle"
     v-bind="$attrs"
-    v-on="$emit"
   >
     <template #default>
       <q-icon :name="icon" v-if="icon" />
-      <span v-if="label"> {{ label }}</span>
+      <span v-if="label" style="padding: 0px 4px"> {{ label }}</span>
     </template>
   </q-btn>
 </template>

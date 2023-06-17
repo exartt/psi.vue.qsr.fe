@@ -37,7 +37,6 @@ export default defineComponent({
     const isOpened = ref(false);
 
     const open = () => {
-      console.log("open");
       isOpened.value = true;
     };
 

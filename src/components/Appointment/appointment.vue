@@ -5,7 +5,8 @@
         <select-component
           label="Selecionar paciente"
           :options="options"
-          v-model="choosedTest"
+          v-model="patientOption"
+          @change="automaticDescription"
         />
       </div>
       <div :class="responsiveFirstChild()">
@@ -49,14 +50,14 @@
         </div>
         <q-space />
         <div class="col-auto q-pl-sm">
-          <s-button label="Desmarcar" @click="close" type="tertiary" />
+          <s-button
+            label="Desmarcar"
+            @click="cancelAppointment"
+            type="tertiary"
+          />
         </div>
         <div class="col-auto q-pl-md">
-          <s-button
-            label="Remarcar"
-            @click="createAppointment"
-            type="primary"
-          />
+          <s-button label="Remarcar" @click="reSchedule" type="primary" />
         </div>
       </div>
     </template>
@@ -64,16 +65,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import modal from "src/components/components-structure/modal.vue";
-import datapickerComponent from "src/components/components-structure/datapicker.vue";
+import datapickerComponent from "src/components/components-structure/datepicker.vue";
 import inputComponent from "src/components/components-structure/input.vue";
 import selectComponent from "src/components/components-structure/select.vue";
 import { date } from "quasar";
 import { IOptions, ModalComponent } from "src/interfaces/IComponents";
 import useApi from "src/composables/requests";
 import SButton from "../components-structure/button.vue";
-import { EventType } from "@/interfaces/IUtil";
+import { EventType } from "src/interfaces/IUtil";
+import { StatusAgendamento } from "src/enum/StatusAppointment";
 
 export default defineComponent({
   components: {
@@ -83,16 +85,18 @@ export default defineComponent({
     datapickerComponent,
     SButton,
   },
-  setup() {
-    const { get, post, error } = useApi();
-    const choosedTest = ref<IOptions | null>({
+  setup(_, { emit }) {
+    const { post, put } = useApi();
+    const patientOption = ref<IOptions | null>({
       value: null,
       label: null,
     });
     const responsiveModal = ref<ModalComponent | null>(null);
-
+    const schedule = "/schedule/v1";
     const storeSelected = ref<EventType | null>(null);
     const isEditMode = ref(false);
+    const dateStartMemory = ref("");
+    const dateEndMemory = ref("");
     const dateStart = ref("");
     const dateEnd = ref("");
     const summary = ref("");
@@ -104,12 +108,37 @@ export default defineComponent({
       },
     ];
 
+    watch(dateStart, (newStartDate) => {
+      if (newStartDate) {
+        const parts = newStartDate.split(" ");
+        const datePart = parts[0];
+        const timeParts = parts[1].split(":");
+        let hour = parseInt(timeParts[0]);
+        let minute = parseInt(timeParts[1]);
+
+        hour += 1;
+
+        if (hour > 23) {
+          hour = 0;
+        }
+
+        const newEndTime = `${datePart} ${hour
+          .toString()
+          .padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+        dateEnd.value = newEndTime;
+      }
+    });
+
+    const automaticDescription = () => {
+      description.value = `Consulta do ${patientOption.value?.label}`;
+    };
+
     const scheduleObject = () => {
       return {
         Start: convertDate(dateStart.value),
         End: convertDate(dateEnd.value),
         PsychologistID: 1,
-        PatientID: choosedTest.value?.value,
+        PatientID: patientOption.value?.value,
         Summary: summary.value,
         Description: description.value,
         Notify: true,
@@ -120,14 +149,43 @@ export default defineComponent({
       summary.value = "";
       description.value = "";
       storeSelected.value = null;
-      choosedTest.value = { value: null, label: null };
+      patientOption.value = { value: null, label: null };
+    };
+
+    const reSchedule = (): void => {
+      const id = storeSelected.value?.ID;
+      let url: string = `${schedule}/update-appointment/${id}`;
+      if (
+        dateStartMemory.value != dateStart.value ||
+        dateEndMemory.value != dateEndMemory.value
+      ) {
+        url = url.concat(`/status/${StatusAgendamento.Remarcado}`);
+      }
+
+      put(url, scheduleObject()).then((response) => {
+        reloadCalendar();
+        close();
+      });
+    };
+
+    const cancelAppointment = (): void => {
+      const id = storeSelected.value?.ID;
+      const url = `${schedule}/update-appointment/${id}/cancel-appointment`;
+      put(url, scheduleObject()).then((response) => {
+        reloadCalendar();
+        close();
+      });
     };
 
     const createAppointment = async () => {
       const response = await post(
         "/schedule/v1/create-appointment",
         scheduleObject()
-      );
+      ).then(() => {
+        reloadCalendar();
+        close();
+      });
+      console.log(response);
     };
 
     const convertDate = (data: string): Date => {
@@ -150,13 +208,16 @@ export default defineComponent({
     const onEdit = (appointmentSelected: any): void => {
       storeSelected.value = appointmentSelected;
 
+      dateStartMemory.value = parseDate(appointmentSelected.start);
+      dateEndMemory.value = parseDate(appointmentSelected.end);
       dateStart.value = parseDate(appointmentSelected.start);
       dateEnd.value = parseDate(appointmentSelected.end);
       summary.value = appointmentSelected.summary;
       description.value = appointmentSelected.description;
+      console.log("abriu", dateEnd.value);
       const patient = getPatientById(appointmentSelected.patientID);
       if (patient) {
-        choosedTest.value = patient;
+        patientOption.value = patient;
       }
       isEditMode.value = true;
       responsiveModal.value?.open();
@@ -191,22 +252,31 @@ export default defineComponent({
     const responsiveLastChild = () => {
       return responsiveConfig() + " q-pl-md-sm";
     };
+
+    const reloadCalendar = (): void => {
+      emit("reloadCalendar");
+    };
+
     return {
-      responsiveFirstChild,
-      responsiveLastChild,
-      responsiveConfig,
       responsiveModal,
-      onOpen,
-      close,
-      createAppointment,
       dateStart,
       dateEnd,
       summary,
       description,
-      choosedTest,
+      patientOption,
       options,
-      onEdit,
       isEditMode,
+      onOpen,
+      close,
+      createAppointment,
+      responsiveFirstChild,
+      responsiveLastChild,
+      responsiveConfig,
+      onEdit,
+      cancelAppointment,
+      reSchedule,
+      automaticDescription,
+      convertDate,
     };
   },
 });

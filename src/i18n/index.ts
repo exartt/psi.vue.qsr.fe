@@ -1,5 +1,6 @@
-import enUS from './en-US'
+import ptBR from "./pt-BR";
+import { Quasar } from "quasar";
 
 export default {
-  'en-US': enUS
+  'pt-BR': ptBR
 }

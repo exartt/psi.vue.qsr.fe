@@ -43,12 +43,13 @@ export default function useApi(): ApiMethods {
   const post = async (url: string, data: any, requestMessage: RequestMessage = defaultMessage): Promise<void> => {
     try {
       $q.loading.show();
-      await internalInstance?.appContext.config.globalProperties.$gateway.post(url, data);
+      const response: AxiosResponse<any> | undefined = await internalInstance?.appContext.config.globalProperties.$gateway.post(url, data);
       message.fire({
         icon: 'success',
         title: requestMessage.success.title ? requestMessage.success.title : undefined,
         text: requestMessage.success.message ? requestMessage.success.message : undefined,
       })
+      return response?.data;
     } catch (err) {
       error.value = err instanceof Error ? err : new Error(String(err));
     } finally {
@@ -59,8 +60,9 @@ export default function useApi(): ApiMethods {
   const put = async (url: string, data: any, RequestMessage: RequestMessage = defaultMessage): Promise<void> => {
     try {
       $q.loading.show();
-      await internalInstance?.appContext.config.globalProperties.$gateway.put(url, data);
+      const response: AxiosResponse<any> | undefined = await internalInstance?.appContext.config.globalProperties.$gateway.put(url, data);
       console.log("Dados atualizados com sucesso!");
+      return response?.data;
     } catch (err) {
       error.value = err instanceof Error ? err : new Error(String(err));
       console.error("Erro ao atualizar dados:", error.value);
@@ -72,8 +74,9 @@ export default function useApi(): ApiMethods {
   const remove = async (url: string, RequestMessage: RequestMessage = defaultMessage): Promise<void> => {
     try {
       $q.loading.show();
-      await internalInstance?.appContext.config.globalProperties.$gateway.delete(url);
+      const response: AxiosResponse<any> | undefined = await internalInstance?.appContext.config.globalProperties.$gateway.delete(url);
       console.log("Dados excluídos com sucesso!");
+      return response?.data;
     } catch (err) {
       error.value = err instanceof Error ? err : new Error(String(err));
       console.error("Erro ao excluir dados:", error.value);

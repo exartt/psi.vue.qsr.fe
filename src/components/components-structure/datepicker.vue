@@ -16,7 +16,7 @@
 
     <q-dialog v-model="showDateDialog">
       <div class="column bg-white">
-        <q-date v-model="selectedDate" color="red" dense flat></q-date>
+        <q-date v-model="selectedDate" minimal dense flat></q-date>
         <div class="row reverse full-width q-pb-md">
           <div class="col-auto">
             <q-btn
@@ -36,7 +36,7 @@
     <q-dialog v-model="showTimeDialog">
       <div class="row bg-white">
         <div class="column">
-          <q-time v-model="selectedTime" flat dense></q-time>
+          <q-time v-model="selectedTime" minimal flat dense></q-time>
           <div class="col-auto q-pt-sm q-pb-md q-px-md">
             <div class="row justify-between">
               <div class="col-auto">
@@ -76,13 +76,14 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
+import { date } from "quasar";
 
 export default defineComponent({
   name: "DateTimePicker",
   props: {
     modelValue: String,
   },
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "change"],
   setup(props, { emit }) {
     const showDateDialog = ref(false);
     const showTimeDialog = ref(false);
@@ -91,12 +92,31 @@ export default defineComponent({
     const selectedTime = ref("");
 
     const formattedDateTime = computed({
-      get: () => selectedDate.value + " " + selectedTime.value,
+      get: () => {
+        if (selectedDate.value && selectedTime.value) {
+          const formattedDate = date.formatDate(
+            selectedDate.value,
+            "DD/MM/YYYY"
+          );
+          const time = selectedTime.value.slice(0, 5);
+          return `${formattedDate} ${time}`;
+        }
+        return "";
+      },
       set: (value) => {
         const [date, time] = value.split(" ");
         selectedDate.value = date;
         selectedTime.value = time;
       },
+    });
+
+    const formattedDateTimeForEmit = computed(() => {
+      if (selectedDate.value && selectedTime.value) {
+        const formattedDate = date.formatDate(selectedDate.value, "YYYY/MM/DD");
+        const time = selectedTime.value.slice(0, 5);
+        return `${formattedDate} ${time}`;
+      }
+      return "";
     });
 
     if (props.modelValue) {
@@ -114,7 +134,8 @@ export default defineComponent({
 
     const saveDateTime = () => {
       showTimeDialog.value = false;
-      emit("update:modelValue", formattedDateTime.value);
+      emit("change", selectedDate);
+      emit("update:modelValue", formattedDateTimeForEmit.value);
     };
 
     return {
