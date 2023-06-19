@@ -1,6 +1,7 @@
 <template>
   <div class="container-calendar">
     <full-calendar class="calendar" :options="calendarOptions"></full-calendar>
+    <google-auth></google-auth>
     <appointment
       ref="appointmentModal"
       @reloadCalendar="$emit('reloadCalendar')"
@@ -17,11 +18,13 @@ import interactionPlugin from "@fullcalendar/interaction";
 import Appointment from "../Appointment/appointment.vue";
 import { AppointmentModalComponet } from "@/interfaces/IComponents";
 import { EventType } from "@/interfaces/IUtil";
+import googleAuth from "../google/googleAuth.vue";
 
 export default defineComponent({
   components: {
     FullCalendar,
     Appointment,
+    googleAuth,
   },
   props: {
     events: {
@@ -46,16 +49,15 @@ export default defineComponent({
         ID: clickInfo.event.id,
         start: clickInfo.event.start,
         end: clickInfo.event.end,
-        description: clickInfo.event.title,
+        description: clickInfo.event.extendedProps.description,
         location: clickInfo.event.location,
         summary: clickInfo.event.extendedProps.summary,
         status: clickInfo.event.extendedProps.status,
         notify: clickInfo.event.extendedProps.notify,
         patientID: clickInfo.event.extendedProps.patientID,
-        tenantID: clickInfo.event.extendedProps.tenantID,
-        psychologistID: clickInfo.event.extendedProps.psychologistID,
+        EventID: clickInfo.event.extendedProps.EventID,
+        PsychologistID: clickInfo.event.extendedProps.PsychologistID,
       };
-
       appointmentModal.value?.onEdit(appointmentSelected);
     };
 
@@ -88,19 +90,18 @@ export default defineComponent({
       eventsSet: handleEvents,
       events: props.events.map((event) => ({
         id: event.ID,
-        title: event.Description,
+        title: event.Summary,
         start: event.Start,
         end: event.End,
-        description: event.Description,
         location: event.Location,
         extendedProps: {
+          description: event.Description,
           summary: event.Summary,
           status: event.Status,
           notify: event.Notify,
-          psychologistID: event.PsychologistID,
+          PsychologistID: event.PsychologistID,
           patientID: event.PatientID,
-          tenantID: event.TenantID,
-          calendarID: event.CalendarID,
+          EventID: event.EventID,
           createdAt: event.CreatedAt,
           updatedAt: event.UpdatedAt,
         },

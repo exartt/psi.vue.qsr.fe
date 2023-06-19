@@ -29,7 +29,7 @@ export type EventType = {
   PsychologistID: number;
   PatientID: number;
   TenantID: number;
-  CalendarID: string;
+  EventID: string;
   Start: string;
   End: string;
   Summary: string;

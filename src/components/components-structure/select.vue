@@ -7,16 +7,13 @@
     :dense="dense"
     :label="label"
     :options="options"
-  ></q-select>
+    @blur="handleBlur"
+  />
 </template>
 
 <script lang="ts">
+import { IOptions } from "src/interfaces/IComponents";
 import { defineComponent, computed, toRefs } from "vue";
-
-export type IOptions = {
-  label: string | null;
-  value: string | number | null;
-};
 
 export default defineComponent({
   name: "SelectCustom",
@@ -42,9 +39,13 @@ export default defineComponent({
       default: true,
     },
   },
-  emits: ["update:modelValue", "change"],
+  emits: ["update:modelValue", "change", "blur"],
   setup(props, { emit }) {
     const { modelValue } = toRefs(props);
+
+    const handleBlur = () => {
+      emit("blur");
+    };
 
     const internalModel = computed({
       get: () => modelValue.value,
@@ -56,6 +57,7 @@ export default defineComponent({
 
     return {
       internalModel,
+      handleBlur,
       ...toRefs(props),
     };
   },

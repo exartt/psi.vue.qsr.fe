@@ -2,3 +2,29 @@
   color: #434343
 }
 
+.swal2-container {
+  z-index: 10000;
+  .swal2-popup {
+    max-width: 340px;
+    min-height: 300px;
+    padding-bottom: 8px;
+  }
+  .swal2-icon {
+    font-size: 14px;
+  }
+  .swal2-title {
+    display: block;
+    margin: 0px;
+    height: fit-content;
+    padding: 0px;
+  }
+  .swal2-html-container {
+    font-size: 14px;
+    display: block;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+  .swal2-actions {
+    margin: 0;
+  }
+}
