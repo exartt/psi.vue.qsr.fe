@@ -1,7 +1,7 @@
-import { ref, getCurrentInstance } from 'vue';
-import { useQuasar } from 'quasar';
-import { ApiMethods, RequestMessage } from '@/interfaces/IUtil';
-import { AxiosResponse } from 'axios';
+import { ref, getCurrentInstance } from "vue";
+import { useQuasar } from "quasar";
+import { ApiMethods, RequestMessage } from "src/interfaces/IUtil";
+import { AxiosResponse } from "axios";
 import { useSweetAlert2 } from "src/composables/useSweetalert";
 
 export default function useApi(): ApiMethods {
@@ -10,42 +10,71 @@ export default function useApi(): ApiMethods {
   const internalInstance = getCurrentInstance();
   const message = useSweetAlert2();
 
-  const defaultMessage: RequestMessage = { success: { title: null, message: "Requisição bem sucedida!" },
-  error: { title: "Oops...", message: "Ocorreu um erro inesperado! Aguarde alguns instantes e tente novamente" } }
+  const defaultMessage: RequestMessage = {
+    success: { title: null, message: "Requisição bem sucedida!" },
+    error: {
+      title: "Oops...",
+      message:
+        "Ocorreu um erro inesperado! Aguarde alguns instantes e tente novamente",
+    },
+  };
 
-  const get = async (url: string, showMessage: boolean = true, requestMessage: RequestMessage = defaultMessage): Promise<any> => {
+  const get = async (
+    url: string,
+    showMessage: boolean = true,
+    requestMessage: RequestMessage = defaultMessage
+  ): Promise<any> => {
     try {
       $q.loading.show();
-      const response: AxiosResponse<any> | undefined = await internalInstance?.appContext.config.globalProperties.$gateway.get(url);
+      const response: AxiosResponse<any> | undefined =
+        await internalInstance?.appContext.config.globalProperties.$gateway.get(
+          url
+        );
       if (!response) {
         throw new Error("Servidor não retornou nenhuma resposta.");
       }
       if (showMessage) {
         message.fire({
-          icon: 'success',
-          title: requestMessage.success.title ? requestMessage.success.title : undefined,
-          text: requestMessage.success.message ? requestMessage.success.message : undefined,
-        })
+          icon: "success",
+          title: requestMessage.success.title
+            ? requestMessage.success.title
+            : undefined,
+          text: requestMessage.success.message
+            ? requestMessage.success.message
+            : undefined,
+        });
       }
       return response.data;
     } catch (err) {
       error.value = err instanceof Error ? err : new Error(String(err));
       message.fire({
-        icon: 'error',
-        title: requestMessage.error.title ? requestMessage.error.title : undefined,
-        text: requestMessage.error.message ? requestMessage.error.message : undefined,
-      })
+        icon: "error",
+        title: requestMessage.error.title
+          ? requestMessage.error.title
+          : undefined,
+        text: requestMessage.error.message
+          ? requestMessage.error.message
+          : undefined,
+      });
     } finally {
       $q.loading.hide();
     }
   };
 
-  const post = async (url: string, data: any, requestMessage: RequestMessage = defaultMessage): Promise<void> => {
+  const post = async (
+    url: string,
+    data: any,
+    requestMessage: RequestMessage = defaultMessage
+  ): Promise<void> => {
     try {
       $q.loading.show();
-      const response: AxiosResponse<any> | undefined = await internalInstance?.appContext.config.globalProperties.$gateway.post(url, data);
+      const response: AxiosResponse<any> | undefined =
+        await internalInstance?.appContext.config.globalProperties.$gateway.post(
+          url,
+          data
+        );
       message.fire({
-        icon: 'success',
+        icon: "success",
         title: requestMessage.success.title || undefined,
         text: requestMessage.success.message || undefined,
       });
@@ -58,7 +87,7 @@ export default function useApi(): ApiMethods {
         errorMessage = err.response.data.message;
       }
       message.fire({
-        icon: 'error',
+        icon: "error",
         title: requestMessage.error.title || undefined,
         text: errorMessage || undefined,
       });
@@ -83,10 +112,18 @@ export default function useApi(): ApiMethods {
   //   }
   // };
 
-  const put = async (url: string, data: any, RequestMessage: RequestMessage = defaultMessage): Promise<void> => {
+  const put = async (
+    url: string,
+    data: any,
+    RequestMessage: RequestMessage = defaultMessage
+  ): Promise<void> => {
     try {
       $q.loading.show();
-      const response: AxiosResponse<any> | undefined = await internalInstance?.appContext.config.globalProperties.$gateway.put(url, data);
+      const response: AxiosResponse<any> | undefined =
+        await internalInstance?.appContext.config.globalProperties.$gateway.put(
+          url,
+          data
+        );
       console.log("Dados atualizados com sucesso!");
       return response?.data;
     } catch (err) {
@@ -97,10 +134,15 @@ export default function useApi(): ApiMethods {
     }
   };
 
-  const remove = async (url: string, RequestMessage: RequestMessage = defaultMessage): Promise<void> => {
+  const remove = async (
+    url: string,
+    RequestMessage: RequestMessage = defaultMessage
+  ): Promise<void> => {
     try {
       $q.loading.show();
-      await internalInstance?.appContext.config.globalProperties.$gateway.delete(url);
+      await internalInstance?.appContext.config.globalProperties.$gateway.delete(
+        url
+      );
       console.log("Dados excluídos com sucesso!");
     } catch (err) {
       error.value = err instanceof Error ? err : new Error(String(err));
