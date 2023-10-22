@@ -1,13 +1,12 @@
 export interface UserLogin {
-  username: string;
+  email: string;
   password: string;
 }
 
 interface User {
-  id: number
-  email: string
-  createdAt: Date
-  isActive: boolean
-  profileType: number
+  id: number;
+  email: string;
+  createdAt: Date;
+  isActive: boolean;
+  profileType: number;
 }
-

@@ -4,7 +4,7 @@
       <div class="container-btn">
         <q-img></q-img>
         <q-input
-          v-model="username"
+          v-model="email"
           label="Email"
           outlined
           class="q-mb-sm"
@@ -22,45 +22,43 @@
           style="background: #ff0080; color: white"
           label="Entrar"
           class="loginBtn full-width"
-          @click="doLogin"
+          @click.stop="doLogin"
         />
       </div>
     </div>
-    <alert-card ref="alertCardRef" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useAuthStore } from "src/stores/authStore";
-import AlertCard from "src/components/components-structure/alertCard.vue";
+import { useSweetAlert2 } from "src/composables/useSweetalert";
+
+const message = useSweetAlert2();
 
 export default defineComponent({
   name: "LoginService",
-  components: {
-    AlertCard,
-  },
+
   setup() {
     const password = ref("");
-    const username = ref("");
-    const alertCardRef = ref(null);
+    const email = ref("");
 
     const verifyFields = () => {
-      if (!password.value || !username.value) {
-        // TODO -> substituir pelo sweetalert
-        alertCardRef.value.showError(
-          "Oops!",
-          "Por favor, preencha todos os campos obrigatórios para que possamos prosseguir."
-        );
+      if (!password.value || !email.value) {
+        message.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "Por favor, preencha todos os campos obrigatórios para que possamos prosseguir."
+        });
         return false;
       }
       return true;
     };
 
-    const doLogin = async () => {
+    const doLogin = () => {
       if (verifyFields()) {
-        await useAuthStore().doLogin({
-          username: username.value,
+        useAuthStore().doLogin({
+          email: email.value,
           password: password.value,
         });
       }
@@ -69,9 +67,8 @@ export default defineComponent({
     return {
       verifyFields,
       password,
-      username,
+      email,
       doLogin,
-      alertCardRef,
     };
   },
 });

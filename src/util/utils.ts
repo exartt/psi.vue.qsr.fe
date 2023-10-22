@@ -1,17 +1,17 @@
-import { Loading } from 'quasar';
-import { InjectionKey } from 'vue';
-import { IUtils } from '../interfaces/IUtil';
+import { useQuasar } from "quasar";
+import { InjectionKey } from "vue";
+import { IUtils } from "../interfaces/IUtil";
 
-export const UtilKey: InjectionKey<IUtils> = Symbol('IUtils');
-
+export const UtilKey: InjectionKey<IUtils> = Symbol("IUtils");
+const $q = useQuasar();
 const utils: IUtils = {
   showLoading(msg: string) {
-    Loading.show({
-      message: msg,
-    });
+    $q.loading.show({ message: msg });
   },
   hideLoading() {
-    Loading.hide();
+    if ($q.loading.isActive) {
+      $q.loading.hide();
+    }
   },
 };
 

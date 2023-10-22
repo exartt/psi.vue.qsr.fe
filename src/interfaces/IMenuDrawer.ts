@@ -42,7 +42,7 @@ const sections: Section[] = [
         route: Route.AGENDA,
         icon: "calendar_month",
         name: "Agenda",
-        disabled: true,
+        disabled: false,
       },
       {
         route: Route.CLIENTES,
@@ -102,4 +102,4 @@ const sections: Section[] = [
   },
 ];
 
-export { sections }
+export { sections };

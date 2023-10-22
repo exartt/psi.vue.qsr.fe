@@ -1,37 +1,55 @@
 import { defineStore } from "pinia";
-import { inject } from "vue";
-import { api } from "src/boot/axios";
 import { UserLogin } from "src/interfaces/IUser";
-import { UtilKey } from "src/util/utils";
-import { IUtils } from "src/interfaces/IUtil";
+import { api } from "src/boot/axios";
+import { Cookies } from "quasar";
 
-export const useAuthStore = defineStore("auth", {
+export const useAuthStore = defineStore({
+  id: "auth",
   state: () => ({
     user: null,
-    error: null,
     token: null,
-    tokenExpiration: null,
+    error: null,
   }),
   getters: {
     getUser: (state) => state.user,
-    getError: (state) => state.error,
     getToken: (state) => state.token,
-    getTokenExpiration: (state) => state.tokenExpiration,
+    getError: (state) => state.error,
   },
   actions: {
-    async doLogin({ username, password }: UserLogin) {
-      const utils = inject<IUtils>(UtilKey) as any;
+    setToken(token) {
+      this.token = token;
+    },
+    async doLogin({ email, password }: UserLogin) {
       try {
-        utils.showLoading("Efetuando login");
-        await api.post("/login", { username, password }).then((response) => {
-          this.user = response.data;
+        const response = await api.post("/user/v1/login", {
+          email: email,
+          password: password,
         });
+        if (response && response.data.token) {
+          this.user = response.data.user;
+          this.setToken(response.data.token);
+          this.router.push("/Agenda");
+        } else {
+          console.error("Erro ao efetuar login: resposta vazia ou sem token");
+        }
       } catch (error: any) {
-        this.error = error.response.data.message;
-        console.error("Erro ao efetuar login");
-      } finally {
-        utils.hideLoading();
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          if (error.response.data.message.includes("401")) {
+            error = "Credenciais inválidas";
+          } else {
+            error = error.response.data.message;
+          }
+        } else {
+          error = "Erro ao efetuar login";
+        }
       }
+    },
+    logout() {
+      this.user = null;
     },
   },
 });
