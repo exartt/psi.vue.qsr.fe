@@ -1,18 +1,26 @@
 import { useQuasar } from "quasar";
 import { InjectionKey } from "vue";
 import { IUtils } from "../interfaces/IUtil";
+import { useAuthStore } from "src/stores/authStore";
 
 export const UtilKey: InjectionKey<IUtils> = Symbol("IUtils");
-const $q = useQuasar();
+const quasar = useQuasar();
 const utils: IUtils = {
   showLoading(msg: string) {
-    $q.loading.show({ message: msg });
+    quasar.loading.show({ message: msg });
   },
   hideLoading() {
-    if ($q.loading.isActive) {
-      $q.loading.hide();
+    if (quasar.loading.isActive) {
+      quasar.loading.hide();
     }
   },
 };
 
-export { utils };
+export { utils, quasar };
+
+export function checkAuthorization() {
+  return (
+    localStorage.getItem("Authorization") !== null ||
+    useAuthStore().getStatusToken
+  );
+}

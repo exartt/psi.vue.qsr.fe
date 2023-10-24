@@ -12,9 +12,9 @@ export interface Section {
 }
 
 enum Route {
-  HOME = "/home",
+  HOME = "/default",
   AGENDA = "/agenda",
-  CLIENTES = "/clientes",
+  PACIENTES = "/pacientes",
   CONTAS_RECEBER = "/contas-receber",
   CONTAS_PAGAR = "/contas-pagar",
   FLUXO_CAIXA = "/fluxo-caixa",
@@ -45,10 +45,9 @@ const sections: Section[] = [
         disabled: false,
       },
       {
-        route: Route.CLIENTES,
+        route: Route.PACIENTES,
         icon: "person",
-        name: "Clientes",
-        disabled: true,
+        name: "Pacientes",
       },
     ],
   },

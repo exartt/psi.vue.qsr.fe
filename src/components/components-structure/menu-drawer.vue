@@ -19,7 +19,7 @@
           clickable
           v-ripple="!menu.disabled"
           class="unselected-item"
-          :to="'/Default' + menu.route"
+          :to="menu.route"
           :disable="menu.disabled"
         >
           <q-item-section avatar>

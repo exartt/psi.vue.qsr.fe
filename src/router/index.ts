@@ -1,26 +1,39 @@
-import { route } from "quasar/wrappers";
-import { Cookies } from "quasar";
-
 import {
   createMemoryHistory,
   createRouter,
-  createWebHashHistory,
   createWebHistory,
+  RouteLocationNormalized,
+  NavigationGuardNext,
 } from "vue-router";
 import routes from "./routes";
+import { checkAuthorization } from "src/util/utils";
 
-export default route(function (/* { store, ssrContext } */) {
-  const createHistory = process.env.SERVER
-    ? createMemoryHistory
-    : process.env.VUE_ROUTER_MODE === "history"
-    ? createWebHistory
-    : createWebHashHistory;
+const createHistory = process.env.SERVER
+  ? createMemoryHistory
+  : createWebHistory;
 
-  const Router = createRouter({
-    scrollBehavior: () => ({ left: 0, top: 0 }),
-    routes,
-    history: createHistory(process.env.VUE_ROUTER_BASE),
-  });
-
-  return Router;
+const Router = createRouter({
+  scrollBehavior: () => ({ left: 0, top: 0 }),
+  routes,
+  history: createHistory(process.env.VUE_ROUTER_BASE),
 });
+
+Router.beforeEach(
+  (
+    to: RouteLocationNormalized,
+    from: RouteLocationNormalized,
+    next: NavigationGuardNext
+  ) => {
+    const publicPages = ["/login"];
+
+    const authRequired = !publicPages.includes(to.path);
+
+    if (authRequired && !checkAuthorization()) {
+      return next("/login");
+    }
+
+    next();
+  }
+);
+
+export default Router;

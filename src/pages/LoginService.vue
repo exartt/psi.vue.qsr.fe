@@ -19,11 +19,18 @@
           :rules="[(val) => !!val || 'Campo obrigatório']"
         />
         <q-btn
+          :disable="disableBtn"
           style="background: #ff0080; color: white"
           label="Entrar"
+          :loading="disableBtn"
           class="loginBtn full-width"
           @click.stop="doLogin"
-        />
+        >
+        <template v-slot:loading>
+          <q-spinner-hourglass class="on-left" />
+          Loading...
+        </template>
+        </q-btn>
       </div>
     </div>
   </div>
@@ -40,6 +47,7 @@ export default defineComponent({
   name: "LoginService",
 
   setup() {
+    const disableBtn = ref(false);
     const password = ref("");
     const email = ref("");
 
@@ -55,20 +63,31 @@ export default defineComponent({
       return true;
     };
 
-    const doLogin = () => {
+    const doLogin = async () => {
       if (verifyFields()) {
-        useAuthStore().doLogin({
-          email: email.value,
-          password: password.value,
-        });
+        disableBtn.value = true;
+
+        try {
+          await useAuthStore().doLogin({
+            email: email.value,
+            password: password.value,
+          });
+        } catch (error) {
+          console.error("Ocorreu um erro durante o login:", error);
+        } finally {
+          disableBtn.value = false;
+        }
       }
     };
+
+
 
     return {
       verifyFields,
       password,
       email,
       doLogin,
+      disableBtn,
     };
   },
 });

@@ -16,8 +16,8 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import Appointment from "../Appointment/appointment.vue";
-import { AppointmentModalComponet } from "@/interfaces/IComponents";
-import { EventType } from "@/interfaces/IUtil";
+import { AppointmentModalComponet } from "src/interfaces/IComponents";
+import { EventType } from "src/interfaces/IUtil";
 import googleAuth from "../google/googleAuth.vue";
 
 export default defineComponent({

@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div class="self-center slot-btn" v-if="!$q.platform.is.mobile">
+    <div class="self-center slot-btn" v-if="!quasar.platform.is.mobile">
       <slot></slot>
     </div>
   </div>
@@ -48,14 +48,14 @@ export default {
     getTimeScheduled: String
   },
   setup() {
-    const $q = useQuasar()
+    const quasar = useQuasar()
 
     const isMobile = computed<String>(() => {
-      return $q.platform.is.mobile ? 'col-12' : 'col-10'
+      return quasar.platform.is.mobile ? 'col-12' : 'col-10'
     })
     return {
       isMobile,
-      $q
+      quasar
     }
   }
 }

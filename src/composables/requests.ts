@@ -5,7 +5,7 @@ import { AxiosResponse } from "axios";
 import { useSweetAlert2 } from "src/composables/useSweetalert";
 
 export default function useApi(): ApiMethods {
-  const $q = useQuasar();
+  const quasar = useQuasar();
   const error = ref<null | Error>(null);
   const internalInstance = getCurrentInstance();
   const message = useSweetAlert2();
@@ -25,7 +25,7 @@ export default function useApi(): ApiMethods {
     requestMessage: RequestMessage = defaultMessage
   ): Promise<any> => {
     try {
-      $q.loading.show();
+      quasar.loading.show();
       const response: AxiosResponse<any> | undefined =
         await internalInstance?.appContext.config.globalProperties.$gateway.get(
           url
@@ -57,7 +57,7 @@ export default function useApi(): ApiMethods {
           : undefined,
       });
     } finally {
-      $q.loading.hide();
+      quasar.loading.hide();
     }
   };
 
@@ -67,7 +67,7 @@ export default function useApi(): ApiMethods {
     requestMessage: RequestMessage = defaultMessage
   ): Promise<void> => {
     try {
-      $q.loading.show();
+      quasar.loading.show();
       const response: AxiosResponse<any> | undefined =
         await internalInstance?.appContext.config.globalProperties.$gateway.post(
           url,
@@ -92,25 +92,9 @@ export default function useApi(): ApiMethods {
         text: errorMessage || undefined,
       });
     } finally {
-      $q.loading.hide();
+      quasar.loading.hide();
     }
   };
-
-  // const post = async (url: string, data: any, requestMessage: RequestMessage = defaultMessage): Promise<void> => {
-  //   try {
-  //     $q.loading.show();
-  //     await internalInstance?.appContext.config.globalProperties.$gateway.post(url, data);
-  //     message.fire({
-  //       icon: 'success',
-  //       title: requestMessage.success.title ? requestMessage.success.title : undefined,
-  //       text: requestMessage.success.message ? requestMessage.success.message : undefined,
-  //     })
-  //   } catch (err) {
-  //     error.value = err instanceof Error ? err : new Error(String(err));
-  //   } finally {
-  //     $q.loading.hide();
-  //   }
-  // };
 
   const put = async (
     url: string,
@@ -118,7 +102,7 @@ export default function useApi(): ApiMethods {
     RequestMessage: RequestMessage = defaultMessage
   ): Promise<void> => {
     try {
-      $q.loading.show();
+      quasar.loading.show();
       const response: AxiosResponse<any> | undefined =
         await internalInstance?.appContext.config.globalProperties.$gateway.put(
           url,
@@ -130,16 +114,16 @@ export default function useApi(): ApiMethods {
       error.value = err instanceof Error ? err : new Error(String(err));
       console.error("Erro ao atualizar dados:", error.value);
     } finally {
-      $q.loading.hide();
+      quasar.loading.hide();
     }
   };
 
-  const remove = async (
+  const deletar = async (
     url: string,
     RequestMessage: RequestMessage = defaultMessage
   ): Promise<void> => {
     try {
-      $q.loading.show();
+      quasar.loading.show();
       await internalInstance?.appContext.config.globalProperties.$gateway.delete(
         url
       );
@@ -148,9 +132,9 @@ export default function useApi(): ApiMethods {
       error.value = err instanceof Error ? err : new Error(String(err));
       console.error("Erro ao excluir dados:", error.value);
     } finally {
-      $q.loading.hide();
+      quasar.loading.hide();
     }
   };
 
-  return { get, post, put, delete: remove, error };
+  return { get, post, put, deletar, error };
 }

@@ -2,20 +2,18 @@ import { RouteRecordRaw } from "vue-router";
 
 const routes: RouteRecordRaw[] = [
   {
-    path: "/",
+    path: "/login",
     component: () => import("pages/LoginService.vue"),
   },
   {
-    path: "/Default",
+    path: "/default",
     component: () => import("layouts/Default.vue"),
     children: [
       { path: "", component: () => import("pages/Home.vue") },
-      { path: "/Agenda", component: () => import("pages/Schedule.vue") },
+      { path: "/agenda", component: () => import("pages/Schedule.vue") },
+      { path: "/pacientes", component: () => import("pages/Patients.vue") },
     ],
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: "/:catchAll(.*)*",
     component: () => import("pages/ErrorNotFound.vue"),

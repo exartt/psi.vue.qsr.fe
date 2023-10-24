@@ -39,7 +39,6 @@ export default defineComponent({
   methods: {
     handlerClick() {
       this.$swal.fire("Hello Vue world!!!");
-      // this.$set(this.$refs.drawer, "miniState", !this.$refs.drawer.miniState);
     },
   },
   setup() {
@@ -48,7 +47,7 @@ export default defineComponent({
         {
           menus: [
             {
-              route: "/home",
+              route: "/Default",
               icon: "home",
               name: "Início",
             },
@@ -59,10 +58,9 @@ export default defineComponent({
               disabled: true,
             },
             {
-              route: "/clientes",
+              route: "/pacientes",
               icon: "person",
-              name: "Clientes",
-              disabled: true,
+              name: "Pacientes",
             },
           ],
         },

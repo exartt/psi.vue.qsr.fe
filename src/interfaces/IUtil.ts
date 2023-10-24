@@ -1,4 +1,4 @@
-import { Ref } from 'vue';
+import { Ref } from "vue";
 
 export interface IUtils {
   showLoading: (msg: string) => void;
@@ -7,21 +7,21 @@ export interface IUtils {
 
 export type RequestMessage = {
   success: {
-    title: string | null,
-    message: string | null
-  },
+    title: string | null;
+    message: string | null;
+  };
   error: {
-    title: string | null,
-    message: string | null
-  },
-}
+    title: string | null;
+    message: string | null;
+  };
+};
 
 export interface ApiMethods {
   get: (url: string, showMessage: boolean) => Promise<any>;
   post: (url: string, data: any) => Promise<void>;
   put: (url: string, data: any) => Promise<void>;
-  delete: (url: string) => Promise<void>;
-  error: Ref<Error| null>;
+  deletar: (url: string) => Promise<void>;
+  error: Ref<Error | null>;
 }
 
 export type EventType = {
