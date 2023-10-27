@@ -61,7 +61,6 @@ export default defineComponent({
     };
 
     const closeModal = () => {
-      console.log('close')
       patientModal.value?.close();
     };
 
@@ -71,21 +70,23 @@ export default defineComponent({
       tablePatient.value = await get(url, false).finally(() => {
         quasar.loading.hide();
       });
-      console.log(tablePatient.value)
     };
 
     async function editPatient() {
       quasar.loading.show();
       get(`${path}/get-patient/${(selectedRows.value[0] as any).ID}`, false).then((res) => patientModal.value?.open(true, res)).finally(() => {
         quasar.loading.hide();
+        selectedRows.value = [];
       })
     }
 
-    function deletePatient() {
-      const ids = selectedRows.value.join(',');
-      deletar(`${path}/delete-patient?id=${ids}`).then(() => {
-        getTableData();
-      });
+    async function deletePatient() {
+      selectedRows.value.forEach((selected: any) => {
+        return deletar(`${path}/delete-patient/${selected.ID}`)
+      })
+
+      getTableData();
+      selectedRows.value = [];
     }
 
 

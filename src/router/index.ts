@@ -28,8 +28,10 @@ Router.beforeEach(
 
     const authRequired = !publicPages.includes(to.path);
 
-    if (authRequired && !checkAuthorization()) {
+    if (authRequired && !checkAuthorization() && to.path !== "/login") {
       return next("/login");
+    } else if (to.path === "/login" && checkAuthorization()) {
+      return next("/default");
     }
 
     next();

@@ -19,8 +19,5 @@ const utils: IUtils = {
 export { utils, quasar };
 
 export function checkAuthorization() {
-  return (
-    localStorage.getItem("Authorization") !== null ||
-    useAuthStore().getStatusToken
-  );
+  return localStorage.getItem("token") !== null;
 }

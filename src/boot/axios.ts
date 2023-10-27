@@ -33,6 +33,7 @@ gateway.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
+      console.log('logout?')
       useAuthStore().logout();
       localStorage.removeItem("token"); // removendo o token do localStorage ao receber erro 401
       // Seu código para redirecionar o usuário para a página de login ou outra ação.
