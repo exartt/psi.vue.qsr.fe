@@ -12,11 +12,11 @@ export interface Section {
 }
 
 enum Route {
-  HOME = "/default",
+  HOME = "/",
   AGENDA = "/agenda",
   PACIENTES = "/pacientes",
-  CONTAS_RECEBER = "/contas-receber",
-  CONTAS_PAGAR = "/contas-pagar",
+  CONTAS_RECEBER = "/contas-a-receber",
+  CONTAS_PAGAR = "/contas-a-pagar",
   FLUXO_CAIXA = "/fluxo-caixa",
   DASHBOARD = "/dashboard",
   MARKETING = "/marketing",
@@ -59,14 +59,14 @@ const sections: Section[] = [
         icon: "monetization_on",
         name: "Entrada",
         color: "green",
-        disabled: true,
+        disabled: false,
       },
       {
         route: Route.CONTAS_PAGAR,
         icon: "paid",
         name: "Saída",
         color: "red",
-        disabled: true,
+        disabled: false,
       },
       {
         route: Route.FLUXO_CAIXA,

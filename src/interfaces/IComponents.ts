@@ -18,3 +18,8 @@ export type PatientComponent = {
   open: (isEdit: boolean, object: any) => void;
   close: () => void;
 };
+
+export type BillToReceiveComponent = {
+  open: (isEdit: boolean, object: any) => void;
+  close: () => void;
+};

@@ -34,7 +34,7 @@ export const useAuthStore = defineStore({
           this.user = response.data.user;
           localStorage.setItem("token", response.data.token);
           this.hasToken(true);
-          this.router.push("/default");
+          this.router.push("/");
         } else {
           console.error("Erro ao efetuar login: resposta vazia ou sem token");
         }

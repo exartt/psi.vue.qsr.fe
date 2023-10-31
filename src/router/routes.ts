@@ -6,12 +6,20 @@ const routes: RouteRecordRaw[] = [
     component: () => import("pages/LoginService.vue"),
   },
   {
-    path: "/default",
+    path: "/",
     component: () => import("layouts/Default.vue"),
     children: [
       { path: "", component: () => import("pages/Home.vue") },
       { path: "/agenda", component: () => import("pages/Schedule.vue") },
       { path: "/pacientes", component: () => import("pages/Patients.vue") },
+      {
+        path: "/contas-a-pagar",
+        component: () => import("pages/BillToPay.vue"),
+      },
+      {
+        path: "/contas-a-receber",
+        component: () => import("pages/BillToReceive.vue"),
+      },
     ],
   },
   {

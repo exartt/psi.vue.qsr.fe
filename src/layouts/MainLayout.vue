@@ -47,7 +47,7 @@ export default defineComponent({
         {
           menus: [
             {
-              route: "/Default",
+              route: "/",
               icon: "home",
               name: "Início",
             },
@@ -72,7 +72,7 @@ export default defineComponent({
               icon: "monetization_on",
               name: "Entrada",
               color: "green",
-              disabled: true,
+              disabled: false,
             },
             {
               route: "/contas-pagar",

@@ -47,14 +47,16 @@ export default function useApi(): ApiMethods {
       return response.data;
     } catch (err) {
       error.value = err instanceof Error ? err : new Error(String(err));
+      console.log((err as any).response.data);
+      const errorMessage = (err as any).response.data;
+
       message.fire({
         icon: "error",
         title: requestMessage.error.title
           ? requestMessage.error.title
           : undefined,
-        text: requestMessage.error.message
-          ? requestMessage.error.message
-          : undefined,
+        text:
+          errorMessage.length > 0 ? errorMessage : requestMessage.error.message,
       });
     } finally {
       quasar.loading.hide();

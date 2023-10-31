@@ -290,12 +290,6 @@ export default defineComponent({
       isEditMode.value = false;
       if (await loadPatientOptions()) {
         open();
-      } else {
-        message.fire({
-          icon: "error",
-          title: "Oops",
-          text: "Parece que nossos servidores estão passando por problemas técnicos, aguarde alguns instantes e tente novamente, se o problema persistir entre em contato com o suporte.",
-        });
       }
     };
 

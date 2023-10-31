@@ -31,7 +31,7 @@ Router.beforeEach(
     if (authRequired && !checkAuthorization() && to.path !== "/login") {
       return next("/login");
     } else if (to.path === "/login" && checkAuthorization()) {
-      return next("/default");
+      return next("/");
     }
 
     next();
