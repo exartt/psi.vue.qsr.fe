@@ -1,13 +1,16 @@
 <template>
   <div class="fullscreen text-white text-center q-pa-md flex flex-center">
     <div class="container-login column shadow-10">
-      <div class="container-btn">
-        <q-img></q-img>
+      <q-img src="src/assets/images/login-header.webp" class="q-my-md" sizes="sm" height="150px" width="150px" style="border-radius: 150px; align-self: center;"/>
+      <div>
+        <span class="text-h6 font-color">Bem vindo ao <br> Contador da Psicóloga</span>
+      </div>
+      <div class="container-btn q-pb-xl">
         <q-input
           v-model="email"
           label="Email"
           outlined
-          class="q-mb-sm"
+          dense
           :rules="[(val) => !!val || 'Campo obrigatório']"
         />
         <q-input
@@ -15,13 +18,15 @@
           type="password"
           label="Senha"
           outlined
+          dense
           class="q-mb-sm"
           :rules="[(val) => !!val || 'Campo obrigatório']"
         />
         <q-btn
           :disable="disableBtn"
-          style="background: #ff0080; color: white"
+          style="background: green; color: white"
           label="Entrar"
+          dense
           :loading="disableBtn"
           class="loginBtn full-width"
           @click.stop="doLogin"
@@ -95,11 +100,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .container-login {
+  justify-content: space-between;
   max-width: 500px;
   max-height: 500px;
   height: 500px;
   width: 450px;
-  border-radius: 15px;
+  border-radius: 4px;
 }
 .container-btn {
   width: 86%;
@@ -108,5 +114,8 @@ export default defineComponent({
 
 .container-btn .loginBtn {
   height: 45px;
+}
+.font-color {
+  color: #44444B;
 }
 </style>

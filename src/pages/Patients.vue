@@ -11,6 +11,7 @@
       :filter="filter"
       selection="multiple"
       v-model:selected="selectedRows"
+      :rows-per-page-options="[20]"
     >
       <template v-slot:top>
         <q-btn class="shadow-0" color="primary" label="Adicionar Paciente" @click="openPatient" unelevated />

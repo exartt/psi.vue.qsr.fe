@@ -11,6 +11,7 @@
       :filter="filter"
       selection="multiple"
       v-model:selected="selectedRows"
+      :rows-per-page-options="[20]"
     >
       <template v-slot:top>
         <q-btn class="shadow-0" color="primary" label="Adicionar recebíveis" @click="openModal" unelevated />
@@ -120,8 +121,6 @@ export default defineComponent({
       const hasAllPaid = selectedRows.value.every((item:any) => item.Status === 'PAID');
       const hasSomePaid = selectedRows.value.some((item:any) => item.Status === 'PAID');
       const hasSomePending = selectedRows.value.some((item:any) => item.Status === 'PENDING');
-
-      console.log(hasAllPaid, hasSomePaid, selectedRows.value)
       if (hasAllPaid) {
         return 1;
       } else if (hasSomePending && !hasSomePaid) {
@@ -195,12 +194,15 @@ export default defineComponent({
     async function doSendRequest () {
       quasar.loading.show();
       let routeEnd = analisarItensSelecionados.value === 1 ? 'remove' : 'confirm';
-      selectedRows.value.forEach((element: any) => {
+      await selectedRows.value.forEach((element: any) => {
         put(`${path}/update${suffix}/${element.ID}/${routeEnd}`, {}).then(() => {
-        })
+        }).finally(() => getTableData())
       });
+      selectedRows.value = [];
       quasar.loading.hide();
+
     }
+
     async function editBillToReceive() {
       quasar.loading.show();
       get(`${path}/get${suffix}/${(selectedRows.value[0] as any).ID}`, false).then((res) => billToReceiveModal.value?.open(true, res)).finally(() => {

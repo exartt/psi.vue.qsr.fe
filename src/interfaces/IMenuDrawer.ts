@@ -12,13 +12,12 @@ export interface Section {
 }
 
 enum Route {
-  HOME = "/",
   AGENDA = "/agenda",
   PACIENTES = "/pacientes",
   CONTAS_RECEBER = "/contas-a-receber",
   CONTAS_PAGAR = "/contas-a-pagar",
   FLUXO_CAIXA = "/fluxo-caixa",
-  DASHBOARD = "/dashboard",
+  DASHBOARD = "/",
   MARKETING = "/marketing",
   METAS = "/metas",
 }
@@ -34,9 +33,10 @@ const sections: Section[] = [
     title: "Menu",
     menus: [
       {
-        route: Route.HOME,
-        icon: "home",
-        name: "Início",
+        route: Route.DASHBOARD,
+        icon: "space_dashboard",
+        name: "Dashboard",
+        disabled: false,
       },
       {
         route: Route.AGENDA,
@@ -72,19 +72,13 @@ const sections: Section[] = [
         route: Route.FLUXO_CAIXA,
         icon: "point_of_sale",
         name: "Fluxo de caixa",
-        disabled: true,
+        disabled: false,
       },
     ],
   },
   {
     title: "Estatísticas",
     menus: [
-      {
-        route: Route.DASHBOARD,
-        icon: "space_dashboard",
-        name: "Dashboard",
-        disabled: true,
-      },
       {
         route: Route.MARKETING,
         icon: "campaign",

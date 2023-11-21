@@ -85,7 +85,7 @@ export default defineComponent({
               route: "/fluxo-caixa",
               icon: "point_of_sale",
               name: "Fluxo de caixa",
-              disabled: true,
+              disabled: false,
             },
           ],
         },

@@ -9,9 +9,11 @@ const routes: RouteRecordRaw[] = [
     path: "/",
     component: () => import("layouts/Default.vue"),
     children: [
-      { path: "", component: () => import("pages/Home.vue") },
+      // { path: "", component: () => import("pages/Home.vue") },
       { path: "/agenda", component: () => import("pages/Schedule.vue") },
       { path: "/pacientes", component: () => import("pages/Patients.vue") },
+      { path: "/fluxo-caixa", component: () => import("pages/CashFlow.vue") },
+      { path: "", component: () => import("pages/Dashboard.vue") },
       {
         path: "/contas-a-pagar",
         component: () => import("pages/BillToPay.vue"),

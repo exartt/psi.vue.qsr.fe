@@ -11,11 +11,20 @@
       :filter="filter"
       selection="multiple"
       v-model:selected="selectedRows"
+      :rows-per-page-options="[20]"
     >
       <template v-slot:top>
-        <q-btn class="shadow-0" color="primary" label="Adicionar despesas" @click="openModal" unelevated />
-        <q-btn class="q-ml-sm shadow-0" color="secondary" :disable="selectedRows.length !== 1" label="Editar" @click="editBillToPay" unelevated />
-        <q-btn class="q-ml-sm shadow-0" color="secondary" :disable="selectedRows.length === 0" label="Deletar" @click="deleteBillToPay" unelevated />
+        <q-btn class="shadow-0" color="primary" label="Adicionar despesa" @click="openModal" unelevated />
+        <q-btn class="q-ml-sm shadow-0" color="secondary" :disable="selectedRows.length !== 1" label="Editar" @click="editBillToReceive" unelevated />
+        <q-btn class="q-ml-sm shadow-0" color="secondary" :disable="selectedRows.length === 0" label="Deletar" @click="showDeleteConfirmation" unelevated />
+        <q-btn
+          v-show="selectedRows.length > 0 && analisarItensSelecionados !== 3"
+          class="q-ml-sm shadow-0"
+          :color="analisarItensSelecionados === 1 ? 'red' : 'secondary'"
+          :label="analisarItensSelecionados === 1 ? 'Remover pagamentos' : 'Confimar pagamentos'"
+          @click="doSendRequest"
+          unelevated
+        />
         <q-space />
         <q-input borderless dense debounce="300" color="primary" v-model="filter">
           <template v-slot:append>
@@ -23,20 +32,32 @@
           </template>
         </q-input>
       </template>
+      <template v-slot:body-cell-Status="props">
+        <q-td :props="props">
+          <q-chip
+            :style="getStatusColor(props.row.Status)"
+            dense
+            style="padding: 4px 12px"
+          >
+            {{ formatStatus(props.row.Status) }}
+          </q-chip>
+        </q-td>
+      </template>
     </q-table>
-    <add-bills-to @added-bill="getTableData" ref="billToPayModal" isBillToPay />
+    <add-bills-to @added-bill="getTableData" ref="billToReceiveModal" is-bill-to-pay />
   </q-page>
 </template>
 
 <script lang="ts">
-import { useQuasar } from "quasar";
+import { date, useQuasar } from "quasar";
 import useApi from "src/composables/requests";
 import { BillToReceiveComponent } from "src/interfaces/IComponents";
 import AddBillsTo from "src/components/CRCP/addBillsTo.vue"
-import { defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
+import { useSweetAlert2 } from "src/composables/useSweetalert";
 
 export default defineComponent({
-  name: "BillToReceive",
+  name: "BillTPay",
   components: {
     AddBillsTo
   },
@@ -44,15 +65,14 @@ export default defineComponent({
     onMounted(() => {
       getTableData();
     });
-
+    const message = useSweetAlert2();
     const columns = [
       {
-        name: 'PatientName',
+        name: 'Description',
         required: true,
-        label: 'Nome do cliente',
+        label: 'Descrição',
         align: 'left',
-        field: 'PatientName',
-        format: (val: any) => `${val}`,
+        field: 'Description',
       },
       {
         name: 'Value',
@@ -63,36 +83,82 @@ export default defineComponent({
         format: (val: Number) => `R$ ${val.toFixed(2)}`,
       },
       {
-        name: 'Description',
-        required: true,
-        label: 'Descrição',
+        name: 'RecordDate',
+        label: 'Data final',
         align: 'left',
-        field: 'Description',
+        field: 'RecordDate',
+        format: (val: Date) => date.formatDate(val, 'DD/MM/YYYY'),
       },
       {
         name: 'Status',
         required: true,
         label: 'Status',
-        align: 'left',
+        align: 'center',
         field: 'Status',
-        format: (val: string) => formatStatus(val),
       },
     ] as any;
     const path = "/transactions/v1";
     const suffix = "-bill"
     const quasar = useQuasar();
-    const { get, deletar } = useApi();
+    const { get, deletar, put } = useApi();
     const selectedRows = ref([]);
     const tableTransaction = ref([]);
-    const billToPayModal = ref<BillToReceiveComponent | null>(null);
+    const billToReceiveModal = ref<BillToReceiveComponent | null>(null);
+
+    const analisarItensSelecionados = computed(() => {
+      if (selectedRows.value.length === 0) {
+        return 0;
+      }
+
+      const hasAllPaid = selectedRows.value.every((item:any) => item.Status === 'PAID');
+      const hasSomePaid = selectedRows.value.some((item:any) => item.Status === 'PAID');
+      const hasSomePending = selectedRows.value.some((item:any) => item.Status === 'PENDING');
+      if (hasAllPaid) {
+        return 1;
+      } else if (hasSomePending && !hasSomePaid) {
+        return 2;
+      } else {
+        return 3;
+      }
+    });
 
     const openModal = () => {
-      billToPayModal.value?.open(false, null);
+      billToReceiveModal.value?.open(false, null);
     };
 
     const closeModal = () => {
-      billToPayModal.value?.close();
+      billToReceiveModal.value?.close();
     };
+
+    const getStatusColor = (status: string) => {
+      switch (status) {
+        case 'PAID':
+          return {
+            background: 'green',
+            color: 'white',
+          };
+        case 'OVERDUE':
+          return {
+            background: 'red',
+            color: 'white',
+          };
+        case 'CANCELED':
+          return {
+            background: 'gray',
+            color: 'black',
+          };
+        case 'REFUNDED':
+          return {
+            background: 'blue',
+            color: 'white',
+          };
+        default:
+          return {
+            background: 'orange',
+            color: 'black',
+          };
+      }
+    }
 
     const formatStatus = (val: string) => {
       switch (val) {
@@ -117,15 +183,44 @@ export default defineComponent({
       });
     };
 
-    async function editBillToPay() {
+    async function doSendRequest () {
       quasar.loading.show();
-      get(`${path}/get${suffix}/${(selectedRows.value[0] as any).ID}`, false).then((res) => billToPayModal.value?.open(true, res)).finally(() => {
+      let routeEnd = analisarItensSelecionados.value === 1 ? 'remove' : 'confirm';
+      await selectedRows.value.forEach((element: any) => {
+        put(`${path}/update${suffix}/${element.ID}/${routeEnd}`, {}).then(() => {
+        }).finally(() => getTableData())
+      });
+      selectedRows.value = [];
+      quasar.loading.hide();
+
+    }
+
+    async function editBillToReceive() {
+      quasar.loading.show();
+      get(`${path}/get${suffix}/${(selectedRows.value[0] as any).ID}`, false).then((res) => billToReceiveModal.value?.open(true, res)).finally(() => {
         quasar.loading.hide();
         selectedRows.value = [];
       })
     }
 
-    async function deleteBillToPay() {
+    async function showDeleteConfirmation() {
+      const { value } = await message.fire({
+        icon: 'warning',
+        title: 'Deletar',
+        text: 'Deseja deletar os itens selecionados? Essa ação não poderá ser revertida.',
+        showCancelButton: true,
+        confirmButtonColor: 'red',
+        cancelButtonColor: '#77777',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+      });
+
+      if (value) {
+        deleteSelectedItems();
+      }
+    }
+
+    async function deleteSelectedItems() {
       selectedRows.value.forEach((selected: any) => {
         return deletar(`${path}/delete${suffix}/${selected.ID}`)
       })
@@ -140,12 +235,16 @@ export default defineComponent({
       tableTransaction,
       filter: ref(''),
       selectedRows,
-      editBillToPay,
-      deleteBillToPay,
+      editBillToReceive,
+      showDeleteConfirmation,
       openModal,
+      doSendRequest,
       closeModal,
-      billToPayModal,
-      getTableData
+      billToReceiveModal,
+      getTableData,
+      formatStatus,
+      getStatusColor,
+      analisarItensSelecionados
     };
   }
 });

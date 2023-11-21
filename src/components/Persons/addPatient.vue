@@ -47,7 +47,7 @@
     </template>
     <template #btn-section>
       <div style="display: flex; justify-content: flex-end;">
-        <s-button label="Fechar" @click="close()" type="tertiary" />
+        <s-button label="Fechar" @click="close()" type="tertiary" class="q-px-sm" />
         <s-button :label="editMode ? 'Editar' : 'Adicionar'" @click="persistPerson" type="primary" />
       </div>
     </template>
@@ -137,7 +137,6 @@ export default defineComponent({
               : `Por favor, preencha o campo ${errorMessages[0]}`,
         });
       }
-      console.log(person.value)
       return allowSubmit;
     };
 

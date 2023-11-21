@@ -189,7 +189,7 @@ export default defineComponent({
         allowSubmit = false;
         errorMessages.push("Descrição");
       }
-      if (!transaction.value.Value) {
+      if (!transaction.value.Value && transaction.value.Value > 0) {
         allowSubmit = false;
         errorMessages.push("Valor");
       }
@@ -232,8 +232,8 @@ export default defineComponent({
       resetFields();
       if (props.isBillToPay) {
         transaction.value.TransactionType = 'PAYABLE';
-        transaction.value.Value = 140;
-        path.value = "/bill-to-pay/v1";
+        transaction.value.Value = 0;
+        // path.value = "/bill-to-pay/v1";
       }
 
       if (isEdit) {
