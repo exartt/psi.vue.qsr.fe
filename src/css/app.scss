@@ -1,6 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Lora:wght@400;700&family=Noto+Sans:wght@400;500&display=swap');
+
 .color-grey {
   color: #434343
 }
+
+.font-noto-400 {
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 400;
+}
+
+.font-noto-500 {
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 500;
+}
+
 
 .swal2-container {
   z-index: 10000;

@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <PageComponent title="Meu Fluxo de Caixa" subtitle="Visão Integral das Transações Financeiras: Registro Preciso de Pagamentos e Recebíveis para uma Análise Abrangente do Fluxo de Caixa">
     <q-table
       flat bordered
       :rows="tableTransaction || []"
@@ -14,7 +14,7 @@
         <q-btn @click="filteredTransactions" label="Filtrar" color="primary" dense />
       </template>
     </q-table>
-  </q-page>
+  </PageComponent>
 </template>
 
 <script lang="ts">
@@ -22,11 +22,13 @@ import { date, useQuasar } from "quasar";
 import useApi from "src/composables/requests";
 import { defineComponent, onMounted, ref } from "vue";
 import InputComponent from 'src/components/components-structure/input.vue';
+import PageComponent from "src/components/PageComponent.vue";
 
 export default defineComponent({
   name: "CashFlow",
   components: {
-    InputComponent
+    InputComponent,
+    PageComponent
   },
   setup() {
     const startDateString = ref<string | undefined>(undefined);

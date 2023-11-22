@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <PageComponent title="Meus Pacientes" subtitle="Area destinada a gestão dos Pacientes: Cadastro, Controle e Visualização">
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn round color="primary" icon="add" @click="openPatient" />
     </q-page-sticky>
@@ -33,7 +33,7 @@
       </template>
     </q-table>
     <add-patient @added-person="getTableData" ref="patientModal" />
-  </q-page>
+  </PageComponent>
 </template>
 
 <script lang="ts">
@@ -42,11 +42,13 @@ import useApi from "src/composables/requests";
 import { PatientComponent } from "src/interfaces/IComponents";
 import AddPatient from "src/components/Persons/addPatient.vue"
 import { defineComponent, onMounted, ref } from "vue";
+import PageComponent from "src/components/PageComponent.vue";
 
 export default defineComponent({
   name: "Patients",
   components: {
-    AddPatient
+    AddPatient,
+    PageComponent
   },
   setup() {
     onMounted(() => {

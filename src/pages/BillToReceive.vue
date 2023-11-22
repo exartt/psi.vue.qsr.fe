@@ -1,10 +1,10 @@
 <template>
-  <q-page padding>
+  <PageComponent title="Contas a Receber" subtitle="Registro, Faturamento e Acompanhamento Detalhado das Receitas Pendentes.">
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn round color="primary" icon="add" @click="openModal" />
     </q-page-sticky>
     <q-table
-      flat bordered
+      flat
       :rows="tableTransaction || []"
       row-key="ID"
       :columns="columns"
@@ -45,7 +45,7 @@
       </template>
     </q-table>
     <add-bills-to @added-bill="getTableData" ref="billToReceiveModal" />
-  </q-page>
+  </PageComponent>
 </template>
 
 <script lang="ts">
@@ -55,11 +55,13 @@ import { BillToReceiveComponent } from "src/interfaces/IComponents";
 import AddBillsTo from "src/components/CRCP/addBillsTo.vue"
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { useSweetAlert2 } from "src/composables/useSweetalert";
+import PageComponent from "src/components/PageComponent.vue";
 
 export default defineComponent({
   name: "BillToReceive",
   components: {
-    AddBillsTo
+    AddBillsTo,
+    PageComponent
   },
   setup() {
     onMounted(() => {
