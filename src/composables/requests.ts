@@ -47,7 +47,6 @@ export default function useApi(): ApiMethods {
       return response.data;
     } catch (err) {
       error.value = err instanceof Error ? err : new Error(String(err));
-      console.log((err as any).response.data);
       const errorMessage = (err as any).response.data;
 
       message.fire({

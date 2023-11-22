@@ -194,7 +194,6 @@ export default defineComponent({
     };
 
     const editPerson = () => {
-      console.log(person.value);
       if (validateToSubmit()) {
         return put(`${path}/update-patient/`, person.value)
           .then((response: any) => {

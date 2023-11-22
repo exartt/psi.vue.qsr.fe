@@ -9,6 +9,7 @@
             v-model="patientOption"
             @change="automaticDescription"
             :rules="[validateSelect]"
+            :readonly="isEditMode"
           />
         </div>
         <div :class="responsiveConfig(true)">
@@ -308,26 +309,28 @@ export default defineComponent({
       description.value = appointmentSelected.description;
       statusAppointment.value = appointmentSelected.status;
 
-      await loadPatientOptions();
-
-      const patient = getPatientById(appointmentSelected.patientID);
-      if (patient) {
-        patientOption.value = patient;
-      }
-
       isEditMode.value = true;
-      if (await loadPatientOptions()) {
-        open();
-      }
+
+      setPatientOnOptions(appointmentSelected.patientID);
+
+      open();
     };
 
-    const getPatientById = (id: number): IOptions | undefined => {
-      return options.value.find((patient) => patient.value === String(id));
+    const loadPatientOption = async (id: number): Promise<any> => {
+      const url = `/patient/v1/get-patient-option/${id}`;
+      const response = get(url, false);
+      return response;
+    };
+
+    const setPatientOnOptions = async (id: number) => {
+      options.value = [];
+      const option = await loadPatientOption(id);
+      options.value.push(option);
+      patientOption.value = options.value[0];
     };
 
     const open = () => {
       responsiveModal.value?.open();
-      console.log(appointmentForm.value);
     };
 
     const close = () => {
@@ -384,6 +387,7 @@ export default defineComponent({
       patientOption,
       options,
       isEditMode,
+      storeSelected,
       validateField,
       validateSelect,
       onOpen,

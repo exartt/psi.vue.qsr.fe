@@ -93,7 +93,6 @@ export default defineComponent({
 
       tableTransaction.value = originalTableData.value.filter((transaction: any) => {
         const transactionDate = new Date(transaction.UpdatedAt);
-        console.log(transactionDate, startDate, endDate)
         if (startDate && endDate) {
           return transactionDate >= startDate && transactionDate <= endDate;
         } else if (startDate) {

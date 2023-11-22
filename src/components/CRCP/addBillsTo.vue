@@ -265,7 +265,6 @@ export default defineComponent({
       }
       if (validateToSubmit()) {
         let objTransaction = transaction.value;
-        console.log(transaction.value)
         if (!props.isBillToPay) {
           objTransaction = { ...transaction.value, PatientID: Number(patientOption.value?.value)};
         }
