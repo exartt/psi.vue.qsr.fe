@@ -18,11 +18,18 @@
         <q-btn class="q-ml-sm shadow-0" color="secondary" :disable="selectedRows.length !== 1" label="Editar" @click="editPatient" unelevated />
         <q-btn class="q-ml-sm shadow-0" color="secondary" :disable="selectedRows.length === 0" label="Deletar" @click="deletePatient" unelevated />
         <q-space />
-        <q-input borderless dense debounce="300" color="primary" v-model="filter">
+        <q-input outlined dense debounce="300" color="primary" v-model="filter" label="Pesquisar" class="q-pa-sm">
           <template v-slot:append>
             <q-icon name="search" />
           </template>
         </q-input>
+      </template>
+      <template v-slot:body-cell-IsActive="props">
+        <q-td :props="props" style="width: 20px;">
+          <span class="material-icons" :style="(props.row.IsActive ? 'color: green;' : 'color: red;') + ' font-size: 20px;'" >
+            circle
+          </span>
+        </q-td>
       </template>
     </q-table>
     <add-patient @added-person="getTableData" ref="patientModal" />
@@ -47,6 +54,7 @@ export default defineComponent({
     });
 
     const columns = [
+      { name: "IsActive", label: "", field: (row: { IsActive: boolean; }) => row.IsActive, align: 'left', format: (val: boolean) => val ? 'Ativo' : 'Inativo' },
       { name: "Name", label: "Nome", field: (row: { Name: string; }) => row.Name, align: 'left' },
       { name: "Email", label: "Email", field: (row: { Email: string; }) => row.Email, align: 'left' },
     ] as any;

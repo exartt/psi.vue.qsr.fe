@@ -26,9 +26,9 @@
           unelevated
         />
         <q-space />
-        <q-input borderless dense debounce="300" color="primary" v-model="filter">
+        <q-input outlined dense debounce="300" color="primary" v-model="filter" class="q-pa-sm" label="Pesquisar">
           <template v-slot:append>
-            <q-icon name="search" />
+            <q-icon name="search" label="Pesquisar" />
           </template>
         </q-input>
       </template>
