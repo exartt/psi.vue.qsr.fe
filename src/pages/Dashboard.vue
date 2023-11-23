@@ -41,7 +41,10 @@
           </q-card-section>
         </q-card>
       </div>
-      <faturamento-chart :data="fatData" />
+      <div style="display: flex; align-items: center; flex-direction: column; max-width: 450px;">
+        <span class="text-h4 color-grey font-noto-400 q-pb-md"> Status dos pagamentos</span>
+      </div>
+      <faturamento-chart v-if="renderChart" :data="fatData" />
     </div>
   </q-page>
 </template>
@@ -89,6 +92,7 @@ export default defineComponent({
             Appointments: 0,
         });
         const fatData = ref([]);
+        const renderChart = ref(false);
         const path = "/dashboard/v1";
         const quasar = useQuasar();
         const { get } = useApi();
@@ -112,6 +116,7 @@ export default defineComponent({
               response.forEach((element: any) => {
                 element.Status = convertStatus(element.Status);
               });
+              renderChart.value = true;
               return response;
             }).finally(() => {
                 quasar.loading.hide();
@@ -168,7 +173,7 @@ export default defineComponent({
               return 'Desconhecido';
           }
         }
-        return { cardsData, startDate, endDate, fetchData, fatData };
+        return { cardsData, startDate, endDate, fetchData, fatData, renderChart };
     }
 });
 </script>

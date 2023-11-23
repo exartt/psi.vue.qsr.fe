@@ -82,10 +82,15 @@ export default function useApi(): ApiMethods {
       return response?.data;
     } catch (err: any) {
       error.value = err instanceof Error ? err : new Error(String(err));
-
       let errorMessage = requestMessage.error.message;
-      if (err.response && err.response.data && err.response.data.message) {
-        errorMessage = err.response.data.message;
+      if (
+        err.response &&
+        err.response.data &&
+        (err.response.data.message || err.response.data.error)
+      ) {
+        errorMessage = err.response.data.message
+          ? err.response.data.message
+          : err.response.data.error;
       }
       message.fire({
         icon: "error",
